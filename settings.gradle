@@ -1,0 +1,2 @@
+rootProject.name='Outreach'
+include ':app'
