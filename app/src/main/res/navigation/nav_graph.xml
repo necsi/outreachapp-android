@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="org.endcoronavirus.outreach.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:name="org.endcoronavirus.outreach.CommunitiesBrowse"
+        android:label="@string/fragment_community_broser_label"
+        tools:layout="@layout/fragment_community_browse">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/add_community_action"
             app:destination="@id/SecondFragment" />
     </fragment>
     <fragment
