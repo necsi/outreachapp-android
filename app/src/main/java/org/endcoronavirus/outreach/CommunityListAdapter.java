@@ -8,13 +8,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.endcoronavirus.outreach.models.DataStorage;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdapter.ThisViewHolder> {
-    ArrayList<String> samples = new ArrayList<String>(Arrays.asList(
-            "Family", "Colleagues"
-    ));
+    ArrayList<String> communities;
+
+    public void loadData(DataStorage dataStorage) {
+        communities = dataStorage.getAllCommunitiesNames();
+    }
 
     @NonNull
     @Override
@@ -27,12 +30,14 @@ public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdap
 
     @Override
     public void onBindViewHolder(@NonNull ThisViewHolder holder, int position) {
-        holder.setText(samples.get(position));
+        holder.setText(communities.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return samples.size();
+        if (communities != null)
+            return communities.size();
+        return 0;
     }
 
     class ThisViewHolder extends RecyclerView.ViewHolder {

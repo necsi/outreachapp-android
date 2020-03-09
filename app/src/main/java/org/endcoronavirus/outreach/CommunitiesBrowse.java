@@ -16,11 +16,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class CommunitiesBrowse extends Fragment {
+import org.endcoronavirus.outreach.service.BackendServiceInterface;
 
+public class CommunitiesBrowse extends Fragment implements RequiresServiceAccess {
+
+    private BackendServiceInterface mService;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private CommunityListAdapter dataAdapter;
+
+    @Override
+    public void setService(BackendServiceInterface service) {
+        mService = service;
+        dataAdapter.loadData(mService.getDataStorage());
+    }
 
     @Override
     public View onCreateView(
@@ -43,8 +52,8 @@ public class CommunitiesBrowse extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         dataAdapter = new CommunityListAdapter();
-        recyclerView.setAdapter(dataAdapter);
 
+        recyclerView.setAdapter(dataAdapter);
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

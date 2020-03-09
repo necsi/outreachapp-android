@@ -2,18 +2,23 @@ package org.endcoronavirus.outreach;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import org.endcoronavirus.outreach.service.BackendService;
 import org.endcoronavirus.outreach.service.BackendServiceInterface;
 import org.endcoronavirus.outreach.service.BackendServiceListener;
 
 public class MainActivity extends AppCompatActivity implements BackendServiceListener {
+    private static final String TAG = "MainActivity";
 
     private BackendService.BackendServiceConnection mServiceConnection;
     private BackendServiceInterface mService;
+    private Fragment mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +32,14 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
     }
 
     @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        super.onAttachFragment(fragment);
+        mCurrentFragment = fragment;
+    }
+
+    @Override
     protected void onStart() {
+        Log.d(TAG, "Binding");
         mServiceConnection = BackendService.bindService(this, this);
         super.onStart();
     }
@@ -43,7 +55,14 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
 
     @Override
     public void onServiceBound(BackendServiceInterface service) {
+        Log.d(TAG, "Service Bound");
         mService = service;
+
+        Log.d(TAG, "Fragment Attach");
+        if (mCurrentFragment != null && mCurrentFragment instanceof RequiresServiceAccess) {
+            RequiresServiceAccess ac = (RequiresServiceAccess) mCurrentFragment;
+            ac.setService(mService);
+        }
     }
 
     @Override

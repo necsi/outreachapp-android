@@ -7,11 +7,30 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import org.endcoronavirus.outreach.models.DataStorage;
+
 public class BackendService extends Service implements BackendServiceInterface {
+    private static final String TAG = "BackendService";
     final IBinder mBinder = new LocalBinder();
+
+    DataStorage mDataStorage;
+
+    public DataStorage getDataStorage() {
+        return mDataStorage;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mDataStorage = new DataStorage(this);
+
+        Log.d(TAG, "Backend Service Started");
+    }
 
     @Nullable
     @Override
