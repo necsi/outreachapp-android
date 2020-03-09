@@ -8,4 +8,7 @@
     <string name="previous">Previous</string>
 
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hint_community_name">My Community</string>
+    <string name="label_community_description">Description</string>
+    <string name="hint_community_description">A brief text describing the group</string>
 </resources>

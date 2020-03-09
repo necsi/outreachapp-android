@@ -7,8 +7,12 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class CommunitiesBrowse extends Fragment {
 
@@ -37,5 +41,16 @@ public class CommunitiesBrowse extends Fragment {
 
         dataAdapter = new CommunityListAdapter();
         recyclerView.setAdapter(dataAdapter);
+
+
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(CommunitiesBrowse.this)
+                        .navigate(R.id.add_community_action);
+            }
+        });
+
     }
 }
