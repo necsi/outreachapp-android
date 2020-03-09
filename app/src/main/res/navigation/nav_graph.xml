@@ -20,6 +20,9 @@
         android:name="org.endcoronavirus.outreach.CreateCommunityFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_community_create">
+        <action
+            android:id="@+id/action_confirm_community_create"
+            app:destination="@id/fragment_community_browse" />
 
     </fragment>
 </navigation>
