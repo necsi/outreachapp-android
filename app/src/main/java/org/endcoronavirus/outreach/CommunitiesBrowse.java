@@ -63,6 +63,13 @@ public class CommunitiesBrowse extends Fragment implements RequiresServiceAccess
                         .navigate(R.id.add_community_action);
             }
         });
+
+        if (mService == null) {
+            mService = ((MainActivity) getActivity()).getService();
+        }
+        if (mService != null)
+            dataAdapter.loadData(mService.getDataStorage());
+
     }
 
     @Override

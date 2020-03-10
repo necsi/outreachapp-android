@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import org.endcoronavirus.outreach.service.BackendService;
 import org.endcoronavirus.outreach.service.BackendServiceInterface;
@@ -19,6 +21,11 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
     private BackendService.BackendServiceConnection mServiceConnection;
     private BackendServiceInterface mService;
     private Fragment mCurrentFragment;
+    private NavController navController;
+
+    public BackendServiceInterface getService() {
+        return mService;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +36,13 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        navController = Navigation.findNavController(findViewById(R.id.nav_host_fragment));
     }
 
     @Override
     public void onAttachFragment(@NonNull Fragment fragment) {
+        Log.d(TAG, "Fragment Attach");
         super.onAttachFragment(fragment);
         mCurrentFragment = fragment;
     }
@@ -58,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
         Log.d(TAG, "Service Bound");
         mService = service;
 
-        Log.d(TAG, "Fragment Attach");
+        Log.d(TAG, "Current Fragment: " + mCurrentFragment.getClass().getSimpleName());
+
         if (mCurrentFragment != null && mCurrentFragment instanceof RequiresServiceAccess) {
             RequiresServiceAccess ac = (RequiresServiceAccess) mCurrentFragment;
             ac.setService(mService);

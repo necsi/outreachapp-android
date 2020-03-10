@@ -28,6 +28,7 @@ public class BackendService extends Service implements BackendServiceInterface {
         super.onCreate();
 
         mDataStorage = new DataStorage(this);
+        mDataStorage.open();
 
         Log.d(TAG, "Backend Service Started");
     }

@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
 public class DataStorage extends SQLiteOpenHelper {
+    private static final String TAG = "DataStorage";
 
     private static final String DB_NAME = "Outreach";
     private static final int DB_VERSION = 1;
@@ -31,11 +33,13 @@ public class DataStorage extends SQLiteOpenHelper {
     }
 
     public void open() {
+        Log.d(TAG, "Database Opened");
         mDb = getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "Database Created");
         mDb = db;
         createCommunityTable();
     }
@@ -67,6 +71,8 @@ public class DataStorage extends SQLiteOpenHelper {
         value.put(FLD_COMMUNITY_NAME, community.name);
         value.put(FLD_COMMUNITY_DESC, community.description);
         mDb.insert(TABLE_COMMUNITY, null, value);
+
+        Log.d(TAG, "Record inserted (" + community.name + ")");
     }
 
     public ArrayList<String> getAllCommunitiesNames() {
@@ -76,6 +82,7 @@ public class DataStorage extends SQLiteOpenHelper {
         while (c.moveToNext()) {
             list.add(c.getString(0));
         }
+        Log.d(TAG, "Community Query: (" + list.size() + " records)");
         return list;
     }
 }

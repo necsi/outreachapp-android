@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,11 @@ import org.endcoronavirus.outreach.models.DataStorage;
 import java.util.ArrayList;
 
 public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdapter.ThisViewHolder> {
+    private static final String TAG = "CommunityListAdapter";
     ArrayList<String> communities;
 
     public void loadData(DataStorage dataStorage) {
+        Log.d(TAG, "Loading data");
         communities = dataStorage.getAllCommunitiesNames();
     }
 

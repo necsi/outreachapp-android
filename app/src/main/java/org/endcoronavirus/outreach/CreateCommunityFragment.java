@@ -7,12 +7,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-public class CreateCommunityFragment extends Fragment {
+import org.endcoronavirus.outreach.models.CommunityDetails;
+import org.endcoronavirus.outreach.service.BackendServiceInterface;
+
+public class CreateCommunityFragment extends Fragment implements RequiresServiceAccess {
+
+
+    private BackendServiceInterface mService;
+    private View mView;
+
+    @Override
+    public void setService(BackendServiceInterface service) {
+        mService = service;
+    }
 
     @Override
     public View onCreateView(
@@ -20,7 +33,8 @@ public class CreateCommunityFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_community_create, container, false);
+        mView = inflater.inflate(R.layout.fragment_community_create, container, false);
+        return mView;
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -39,6 +53,13 @@ public class CreateCommunityFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.command_menu_confirm) {
+            if (mService == null) {
+                mService = ((MainActivity) getActivity()).getService();
+            }
+            CommunityDetails community = new CommunityDetails();
+            community.name = ((EditText) mView.findViewById(R.id.community_name)).getText().toString();
+            community.description = ((EditText) mView.findViewById(R.id.community_description)).getText().toString();
+            mService.getDataStorage().addCommunity(community);
             NavHostFragment.findNavController(CreateCommunityFragment.this)
                     .navigate(R.id.action_confirm_community_create);
             return true;
