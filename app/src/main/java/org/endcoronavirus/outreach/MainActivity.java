@@ -1,13 +1,10 @@
 package org.endcoronavirus.outreach;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.endcoronavirus.outreach.models.DataStorage;
@@ -34,7 +31,8 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
         mDataStorage = new ViewModelProvider(this).get(DataStorage.class);
         mDataStorage.open(this);
 
-        startService(new Intent(this, BackendService.class));
+        // NOTE service has been removed. Check also onStart()
+        //startService(new Intent(this, BackendService.class));
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -42,15 +40,9 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
     }
 
     @Override
-    public void onAttachFragment(@NonNull Fragment fragment) {
-        Log.d(TAG, "Fragment Attach");
-        super.onAttachFragment(fragment);
-    }
-
-    @Override
     protected void onStart() {
-        Log.d(TAG, "Binding");
-        mServiceConnection = BackendService.bindService(this, this);
+        // NOTE service was removed from here
+        //mServiceConnection = BackendService.bindService(this, this);
         super.onStart();
     }
 
