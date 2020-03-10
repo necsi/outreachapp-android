@@ -11,21 +11,16 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import org.endcoronavirus.outreach.models.CommunityDetails;
-import org.endcoronavirus.outreach.service.BackendServiceInterface;
+import org.endcoronavirus.outreach.models.DataStorage;
 
-public class CreateCommunityFragment extends Fragment implements RequiresServiceAccess {
+public class CreateCommunityFragment extends Fragment {
 
-
-    private BackendServiceInterface mService;
     private View mView;
-
-    @Override
-    public void setService(BackendServiceInterface service) {
-        mService = service;
-    }
+    private DataStorage mDataStorage;
 
     @Override
     public View onCreateView(
@@ -39,6 +34,8 @@ public class CreateCommunityFragment extends Fragment implements RequiresService
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
     }
 
     @Override
@@ -53,13 +50,10 @@ public class CreateCommunityFragment extends Fragment implements RequiresService
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.command_menu_confirm) {
-            if (mService == null) {
-                mService = ((MainActivity) getActivity()).getService();
-            }
             CommunityDetails community = new CommunityDetails();
             community.name = ((EditText) mView.findViewById(R.id.community_name)).getText().toString();
             community.description = ((EditText) mView.findViewById(R.id.community_description)).getText().toString();
-            mService.getDataStorage().addCommunity(community);
+            mDataStorage.addCommunity(community);
             NavHostFragment.findNavController(CreateCommunityFragment.this)
                     .navigate(R.id.action_confirm_community_create);
             return true;

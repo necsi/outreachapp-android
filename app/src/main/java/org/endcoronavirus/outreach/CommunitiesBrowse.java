@@ -10,26 +10,22 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.endcoronavirus.outreach.service.BackendServiceInterface;
+import org.endcoronavirus.outreach.models.DataStorage;
 
-public class CommunitiesBrowse extends Fragment implements RequiresServiceAccess {
+public class CommunitiesBrowse extends Fragment {
 
-    private BackendServiceInterface mService;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private CommunityListAdapter dataAdapter;
+    private DataStorage mDataStorage;
 
-    @Override
-    public void setService(BackendServiceInterface service) {
-        mService = service;
-        dataAdapter.loadData(mService.getDataStorage());
-    }
 
     @Override
     public View onCreateView(
@@ -64,11 +60,8 @@ public class CommunitiesBrowse extends Fragment implements RequiresServiceAccess
             }
         });
 
-        if (mService == null) {
-            mService = ((MainActivity) getActivity()).getService();
-        }
-        if (mService != null)
-            dataAdapter.loadData(mService.getDataStorage());
+        mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
+        dataAdapter.loadData(mDataStorage);
 
     }
 

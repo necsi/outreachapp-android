@@ -8,10 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 
-public class DataStorage extends SQLiteOpenHelper {
+public class DataStorage extends ViewModel {
     private static final String TAG = "DataStorage";
 
     private static final String DB_NAME = "Outreach";
@@ -24,29 +25,30 @@ public class DataStorage extends SQLiteOpenHelper {
     private static final String FLD_COMMUNITY_NAME = "name";
     private static final String FLD_COMMUNITY_DESC = "description";
 
-    private final Context mContext;
+    private SQLiteOpenHelper mOpenHelper;
     private SQLiteDatabase mDb;
 
-    public DataStorage(@Nullable Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
-        mContext = context;
-    }
-
-    public void open() {
+    public void open(@Nullable Context context) {
         Log.d(TAG, "Database Opened");
-        mDb = getWritableDatabase();
-    }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        Log.d(TAG, "Database Created");
-        mDb = db;
-        createCommunityTable();
-    }
+        if (mOpenHelper == null) {
+            mOpenHelper = new SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                @Override
+                public void onCreate(SQLiteDatabase db) {
+                    Log.d(TAG, "Database Created");
+                    mDb = db;
+                    createCommunityTable();
+                }
 
+                @Override
+                public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+                }
+            };
+        }
+
+        mDb = mOpenHelper.getWritableDatabase();
     }
 
     private void createCommunityTable() {
