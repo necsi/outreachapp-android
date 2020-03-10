@@ -22,6 +22,16 @@
         tools:layout="@layout/fragment_community_create">
         <action
             android:id="@+id/action_confirm_community_create"
+            app:destination="@id/fragment_select_contacts" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_select_contacts"
+        android:name="org.endcoronavirus.outreach.fragments.SelectContactsFragment"
+        android:label="@string/label_select_contacts"
+        tools:layout="@layout/fragment_select_contacts">
+        <action
+            android:id="@+id/action_done"
             app:destination="@id/fragment_community_browse" />
 
     </fragment>

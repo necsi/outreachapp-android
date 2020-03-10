@@ -12,4 +12,5 @@
     <string name="label_community_description">Description</string>
     <string name="hint_community_description">A brief text describing the group</string>
     <string name="command_menu_community_addconfirm">Add</string>
+    <string name="label_select_contacts">Select contacts</string>
 </resources>
