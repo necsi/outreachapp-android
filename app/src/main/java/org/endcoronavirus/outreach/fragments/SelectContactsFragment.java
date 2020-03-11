@@ -35,10 +35,14 @@ public class SelectContactsFragment extends Fragment {
     private SelectContactsListAdapter adapter;
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
+    private long communityId;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        communityId = getArguments().getLong("community_id");
+        Log.d(TAG, "Community ID: " + communityId);
+
         view = inflater.inflate(R.layout.fragment_select_contacts, container, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.contacts_list);
@@ -75,13 +79,15 @@ public class SelectContactsFragment extends Fragment {
             Set<ContactDetails> details = adapter.getSelectedContacts();
             Log.d(TAG, "Contacts added: " + details.size());
             for (ContactDetails contactDetails : details) {
+                contactDetails.communityId = communityId;
                 mDataStorage.addContact(contactDetails);
             }
 
-
             // and move to the community screen
+            Bundle bundle = new Bundle();
+            bundle.putLong("community_id", communityId);
             NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_done);
+                    .navigate(R.id.action_done, bundle);
             return true;
         }
 

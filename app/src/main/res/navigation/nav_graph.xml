@@ -14,6 +14,9 @@
         <action
             android:id="@+id/add_community_action"
             app:destination="@id/fragment_community_create" />
+        <action
+            android:id="@+id/action_select_community"
+            app:destination="@id/fragment_show_community" />
     </fragment>
     <fragment
         android:id="@+id/fragment_community_create"
@@ -23,16 +26,38 @@
         <action
             android:id="@+id/action_confirm_community_create"
             app:destination="@id/fragment_select_contacts" />
-
     </fragment>
     <fragment
         android:id="@+id/fragment_select_contacts"
         android:name="org.endcoronavirus.outreach.fragments.SelectContactsFragment"
         android:label="@string/label_select_contacts"
         tools:layout="@layout/fragment_select_contacts">
+        <argument
+            android:name="community_id"
+            app:argType="long" />
         <action
             android:id="@+id/action_done"
-            app:destination="@id/fragment_community_browse" />
+            app:destination="@id/fragment_show_community" />
 
     </fragment>
+    <fragment
+        android:id="@+id/fragment_show_community"
+        android:name="org.endcoronavirus.outreach.fragments.ShowCommunityFragment"
+        tools:layout="@layout/fragment_show_community">
+        <argument
+            android:name="community_id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_show_contact"
+            app:destination="@+id/fragment_show_contact" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_show_contact"
+        android:name="org.endcoronavirus.outreach.fragments.ShowContactFragment"
+        tools:layout="@layout/fragment_show_contact">
+        <action
+            android:id="@+id/action_fragment_show_contact_to_fragment_community_browse"
+            app:destination="@id/fragment_community_browse" />
+    </fragment>
+
 </navigation>

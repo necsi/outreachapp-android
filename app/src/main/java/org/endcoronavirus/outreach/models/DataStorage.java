@@ -24,6 +24,7 @@ public class DataStorage extends ViewModel {
     private static final String FLD_COMMUNITY_ID = "id";
     private static final String FLD_COMMUNITY_NAME = "name";
     private static final String FLD_COMMUNITY_DESC = "description";
+    private static final String FLD_CONTACTS_COMMUNITY_ID = "community";
 
     private static final String FLD_CONTACTS_ID = "id";
     private static final String FLD_CONTACTS_CTS_ID = "contacts_id";
@@ -85,31 +86,38 @@ public class DataStorage extends ViewModel {
 
         String sql = "create table " + TABLE_CONTACTS +
                 "(" + FLD_CONTACTS_ID + " INTEGER constraint " + TABLE_CONTACTS + "_pl primary key autoincrement," +
+                FLD_CONTACTS_COMMUNITY_ID + " INTEGER not null," +
                 FLD_CONTACTS_CTS_ID + " INTEGER not null," +
                 FLD_CONTACTS_CTS_KEY + " TEXT not null," +
                 FLD_CONTACTS_CACHED_URI + " TEXT not null," +
                 FLD_CONTACTS_CACHED_NAME + " TEXT not null" +
                 ");" +
                 " create index " + TABLE_CONTACTS + "_" + FLD_CONTACTS_CACHED_NAME + "_index " +
-                "on " + TABLE_CONTACTS + " (" + FLD_CONTACTS_CACHED_NAME + ");";
+                "on " + TABLE_CONTACTS + " (" + FLD_CONTACTS_CACHED_NAME + ");" +
+                " create index " + TABLE_CONTACTS + "_" + FLD_CONTACTS_COMMUNITY_ID + "_index " +
+                "on " + TABLE_CONTACTS + " (" + FLD_CONTACTS_COMMUNITY_ID + ");";
         mDb.execSQL(sql);
     }
 
-    public void addCommunity(CommunityDetails community) {
+    public long addCommunity(CommunityDetails community) {
         ContentValues value = new ContentValues();
         value.put(FLD_COMMUNITY_NAME, community.name);
         value.put(FLD_COMMUNITY_DESC, community.description);
-        mDb.insert(TABLE_COMMUNITY, null, value);
+        long id = mDb.insert(TABLE_COMMUNITY, null, value);
 
         Log.d(TAG, "Record inserted (" + community.name + ")");
+        return id;
     }
 
-    public ArrayList<String> getAllCommunitiesNames() {
-        ArrayList<String> list = new ArrayList<>();
-        String[] fields = {FLD_COMMUNITY_NAME};
+    public ArrayList<CommunityDetails> getAllCommunitiesNames() {
+        ArrayList<CommunityDetails> list = new ArrayList<>();
+        String[] fields = {FLD_COMMUNITY_ID, FLD_COMMUNITY_NAME};
         Cursor c = mDb.query(TABLE_COMMUNITY, fields, null, null, null, null, null);
         while (c.moveToNext()) {
-            list.add(c.getString(0));
+            CommunityDetails d = new CommunityDetails();
+            d.id = c.getInt(0);
+            d.name = c.getString(1);
+            list.add(d);
         }
         Log.d(TAG, "Community Query: (" + list.size() + " records)");
         return list;
@@ -119,10 +127,29 @@ public class DataStorage extends ViewModel {
         ContentValues value = new ContentValues();
         value.put(FLD_CONTACTS_CTS_ID, contact.Id);
         value.put(FLD_CONTACTS_CTS_KEY, contact.Key);
+        value.put(FLD_CONTACTS_COMMUNITY_ID, contact.communityId);
         value.put(FLD_CONTACTS_CACHED_URI, contact.getContactUri().toString());
         value.put(FLD_CONTACTS_CACHED_NAME, contact.Name);
         mDb.insert(TABLE_CONTACTS, null, value);
 
         Log.d(TAG, "Record inserted (" + contact.getContactUri().toString() + ")");
+    }
+
+    public ArrayList<ContactDetails> getAllContacts(long communityId) {
+        ArrayList<ContactDetails> list = new ArrayList<>();
+        String[] fields = {FLD_CONTACTS_CACHED_NAME, FLD_COMMUNITY_ID, FLD_CONTACTS_CTS_KEY};
+        String where = FLD_CONTACTS_COMMUNITY_ID + " =?";
+
+        Cursor c = mDb.query(TABLE_CONTACTS, fields, where, new String[]{Long.toString(communityId)},
+                null, null, null);
+        while (c.moveToNext()) {
+            ContactDetails d = new ContactDetails();
+            d.Name = c.getString(0);
+            d.Id = c.getLong(1);
+            d.Key = c.getString(2);
+            list.add(d);
+        }
+        Log.d(TAG, "Contacts Query[" + communityId + "]: (" + list.size() + " records)");
+        return list;
     }
 }

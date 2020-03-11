@@ -41,13 +41,22 @@ public class CommunitiesBrowse extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         dataAdapter = new CommunityListAdapter();
+        dataAdapter.setOnItemClickListener(new CommunityListAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position) {
+                int id = dataAdapter.getIdAtPosition(position);
+                Bundle bundle = new Bundle();
+                bundle.putLong("community_id", id);
+                NavHostFragment.findNavController(CommunitiesBrowse.this)
+                        .navigate(R.id.action_select_community, bundle);
+            }
+        });
 
         recyclerView.setAdapter(dataAdapter);
 
@@ -62,7 +71,6 @@ public class CommunitiesBrowse extends Fragment {
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
         dataAdapter.loadData(mDataStorage);
-
     }
 
     @Override
