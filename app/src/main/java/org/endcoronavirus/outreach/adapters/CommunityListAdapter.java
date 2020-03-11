@@ -1,4 +1,4 @@
-package org.endcoronavirus.outreach;
+package org.endcoronavirus.outreach.adapters;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.CommunityDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 

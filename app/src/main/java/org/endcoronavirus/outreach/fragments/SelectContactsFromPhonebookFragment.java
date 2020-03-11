@@ -27,7 +27,7 @@ import org.endcoronavirus.outreach.models.DataStorage;
 
 import java.util.Set;
 
-public class SelectContactsFragment extends Fragment {
+public class SelectContactsFromPhonebookFragment extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 79;
     private static final String TAG = "SelectContactsFrg";
 
@@ -43,7 +43,7 @@ public class SelectContactsFragment extends Fragment {
         communityId = getArguments().getLong("community_id");
         Log.d(TAG, "Community ID: " + communityId);
 
-        view = inflater.inflate(R.layout.fragment_select_contacts, container, false);
+        view = inflater.inflate(R.layout.fragment_select_contacts_from_phonebook, container, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.contacts_list);
         recyclerView.setHasFixedSize(true);
