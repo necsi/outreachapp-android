@@ -3,6 +3,7 @@ package org.endcoronavirus.outreach.fragments;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,9 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.SelectContactsListAdapter;
+import org.endcoronavirus.outreach.models.ContactDetails;
+
+import java.util.Set;
 
 public class SelectContactsFragment extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 79;
+    private static final String TAG = "SelectContactsFrg";
+
     private View view;
     private SelectContactsListAdapter adapter;
     private RecyclerView recyclerView;
@@ -62,6 +68,9 @@ public class SelectContactsFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.command_menu_confirm) {
             // add all selected contacts to community
+            Set<ContactDetails> details = adapter.getSelectedContacts();
+            Log.d(TAG, "Contacts added: " + details.size());
+
 
             // and move to the community screen
             NavHostFragment.findNavController(this)

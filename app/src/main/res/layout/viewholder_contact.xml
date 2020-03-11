@@ -7,9 +7,17 @@
     android:paddingBottom="10dp">
 
 
+    <CheckBox
+        android:id="@+id/selected_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="" />
+
     <TextView
         android:id="@+id/textview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
 </LinearLayout>
