@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_community_browse">
+
+    <fragment
+        android:id="@+id/fragment_community_browse"
+        android:name="org.endcoronavirus.outreach.CommunitiesBrowse"
+        android:label="@string/fragment_community_broser_label"
+        tools:layout="@layout/fragment_community_browse">
+
+        <action
+            android:id="@+id/add_community_action"
+            app:destination="@id/fragment_community_create" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_community_create"
+        android:name="org.endcoronavirus.outreach.CreateCommunityFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_community_create">
+        <action
+            android:id="@+id/action_confirm_community_create"
+            app:destination="@id/fragment_select_contacts" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_select_contacts"
+        android:name="org.endcoronavirus.outreach.fragments.SelectContactsFragment"
+        android:label="@string/label_select_contacts"
+        tools:layout="@layout/fragment_select_contacts">
+        <action
+            android:id="@+id/action_done"
+            app:destination="@id/fragment_community_browse" />
+
+    </fragment>
+</navigation>

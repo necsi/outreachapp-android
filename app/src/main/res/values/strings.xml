@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Outreach</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="fragment_community_broser_label">Communities</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="hint_community_name">My Community</string>
+    <string name="label_community_description">Description</string>
+    <string name="hint_community_description">A brief text describing the group</string>
+    <string name="command_menu_community_addconfirm">Add</string>
+    <string name="label_select_contacts">Select contacts</string>
+</resources>
