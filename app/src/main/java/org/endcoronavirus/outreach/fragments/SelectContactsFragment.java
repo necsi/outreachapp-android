@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.SelectContactsListAdapter;
 import org.endcoronavirus.outreach.models.ContactDetails;
+import org.endcoronavirus.outreach.models.DataStorage;
 
 import java.util.Set;
 
@@ -32,6 +34,7 @@ public class SelectContactsFragment extends Fragment {
     private View view;
     private SelectContactsListAdapter adapter;
     private RecyclerView recyclerView;
+    private DataStorage mDataStorage;
 
     @Nullable
     @Override
@@ -43,6 +46,7 @@ public class SelectContactsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         setHasOptionsMenu(true);
+        mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
         // FIXME: After granting permissions, the contacts are NOT displayed.
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
@@ -70,6 +74,9 @@ public class SelectContactsFragment extends Fragment {
             // add all selected contacts to community
             Set<ContactDetails> details = adapter.getSelectedContacts();
             Log.d(TAG, "Contacts added: " + details.size());
+            for (ContactDetails contactDetails : details) {
+                mDataStorage.addContact(contactDetails);
+            }
 
 
             // and move to the community screen

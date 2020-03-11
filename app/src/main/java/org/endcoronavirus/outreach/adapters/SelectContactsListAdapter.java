@@ -103,6 +103,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
                     ContactDetails contactDetails = new ContactDetails();
                     contactDetails.Id = cursor.getLong(CONTACT_ID_INDEX);
                     contactDetails.Key = cursor.getString(CONTACT_KEY_INDEX);
+                    contactDetails.Name = cursor.getString(CONTACT_NAME);
                     if (isChecked)
                         selectedContacts.add(contactDetails);
                     else
