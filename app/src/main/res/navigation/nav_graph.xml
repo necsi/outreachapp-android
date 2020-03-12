@@ -25,7 +25,8 @@
         tools:layout="@layout/fragment_community_create">
         <action
             android:id="@+id/action_confirm_community_create"
-            app:destination="@id/fragment_select_contacts" />
+            app:destination="@id/fragment_select_contacts"
+            app:popUpTo="@id/fragment_community_create" />
     </fragment>
     <fragment
         android:id="@+id/fragment_select_contacts"
@@ -37,7 +38,8 @@
             app:argType="long" />
         <action
             android:id="@+id/action_done"
-            app:destination="@id/fragment_show_community" />
+            app:destination="@id/fragment_show_community"
+            app:popUpTo="@id/fragment_community_browse" />
 
     </fragment>
     <fragment
