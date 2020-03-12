@@ -17,9 +17,22 @@ import java.util.ArrayList;
 public class CommunityContactsListAdapter extends RecyclerView.Adapter<CommunityContactsListAdapter.ViewHolder> {
 
     private ArrayList<ContactDetails> contacts;
+    private OnItemClickedListener listener;
+
+    public interface OnItemClickedListener {
+        public void onItemClicked(int position);
+    }
 
     public CommunityContactsListAdapter(DataStorage dataStorage, long communityId) {
         contacts = dataStorage.getAllContacts(communityId);
+    }
+
+    public ContactDetails getContactAtPosition(int position) {
+        return contacts.get(position);
+    }
+
+    public void setOnItemClickedListener(OnItemClickedListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -47,6 +60,14 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textview);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null)
+                        listener.onItemClicked(position);
+                }
+            });
         }
 
         public void setText(String name) {

@@ -9,11 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityContactsListAdapter;
+import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
 public class ShowCommunityFragment extends Fragment {
@@ -21,6 +23,7 @@ public class ShowCommunityFragment extends Fragment {
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
     private long communityId;
+    private CommunityContactsListAdapter adapter;
 
     @Nullable
     @Override
@@ -42,6 +45,18 @@ public class ShowCommunityFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(new CommunityContactsListAdapter(mDataStorage, communityId));
+        adapter = new CommunityContactsListAdapter(mDataStorage, communityId);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickedListener(new CommunityContactsListAdapter.OnItemClickedListener() {
+            @Override
+            public void onItemClicked(int position) {
+                ContactDetails contact = adapter.getContactAtPosition(position);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("contact_uri", contact.getContactUri());
+                NavHostFragment.findNavController(ShowCommunityFragment.this)
+                        .navigate(R.id.action_show_contact, bundle);
+            }
+        });
     }
 }
