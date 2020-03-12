@@ -7,32 +7,62 @@
 
     <fragment
         android:id="@+id/fragment_community_browse"
-        android:name="org.endcoronavirus.outreach.CommunitiesBrowse"
+        android:name="org.endcoronavirus.outreach.fragments.BrowseCommunitiesFragment"
         android:label="@string/fragment_community_broser_label"
-        tools:layout="@layout/fragment_community_browse">
+        tools:layout="@layout/fragment_communities_browse">
 
         <action
             android:id="@+id/add_community_action"
             app:destination="@id/fragment_community_create" />
+        <action
+            android:id="@+id/action_select_community"
+            app:destination="@id/fragment_show_community" />
     </fragment>
     <fragment
         android:id="@+id/fragment_community_create"
-        android:name="org.endcoronavirus.outreach.CreateCommunityFragment"
+        android:name="org.endcoronavirus.outreach.fragments.CreateCommunityFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_community_create">
         <action
             android:id="@+id/action_confirm_community_create"
-            app:destination="@id/fragment_select_contacts" />
-
+            app:destination="@id/fragment_select_contacts"
+            app:popUpTo="@id/fragment_community_create" />
     </fragment>
     <fragment
         android:id="@+id/fragment_select_contacts"
-        android:name="org.endcoronavirus.outreach.fragments.SelectContactsFragment"
+        android:name="org.endcoronavirus.outreach.fragments.SelectContactsFromPhonebookFragment"
         android:label="@string/label_select_contacts"
-        tools:layout="@layout/fragment_select_contacts">
+        tools:layout="@layout/fragment_select_contacts_from_phonebook">
+        <argument
+            android:name="community_id"
+            app:argType="long" />
         <action
             android:id="@+id/action_done"
-            app:destination="@id/fragment_community_browse" />
+            app:destination="@id/fragment_show_community"
+            app:popUpTo="@id/fragment_community_browse" />
 
     </fragment>
+    <fragment
+        android:id="@+id/fragment_show_community"
+        android:name="org.endcoronavirus.outreach.fragments.ShowCommunityFragment"
+        tools:layout="@layout/fragment_show_community">
+        <argument
+            android:name="community_id"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_show_contact"
+            app:destination="@+id/fragment_show_contact" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_show_contact"
+        android:name="org.endcoronavirus.outreach.fragments.ShowContactFragment"
+        tools:layout="@layout/fragment_show_contact">
+        <action
+            android:id="@+id/action_fragment_show_contact_to_fragment_community_browse"
+            app:destination="@id/fragment_community_browse" />
+        <argument
+            android:name="contact_uri"
+            app:argType="android.net.Uri" />
+    </fragment>
+
 </navigation>

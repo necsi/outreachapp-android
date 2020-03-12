@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateCommunityFragment"
-    android:padding="10px"
-    >
+    tools:context=".fragments.CreateCommunityFragment"
+    android:padding="10px">
 
     <TextView
         android:id="@+id/label"

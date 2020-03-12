@@ -13,4 +13,9 @@
     <string name="hint_community_description">A brief text describing the group</string>
     <string name="command_menu_community_addconfirm">Add</string>
     <string name="label_select_contacts">Select contacts</string>
+    <string name="label_contact_name">Name:</string>
+    <string name="label_contact_community">Community:</string>
+    <string name="label_contact_phone">Phone:</string>
+    <string name="label_contact_freetext_notes">Notes</string>
+    <string name="error_cant_read_contact">Can\'t read Contact.</string>
 </resources>

@@ -1,6 +1,7 @@
-package org.endcoronavirus.outreach;
+package org.endcoronavirus.outreach.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,11 +15,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.CommunityDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
 public class CreateCommunityFragment extends Fragment {
 
+    private static final String TAG = "CreateCommunityFragment";
     private View mView;
     private DataStorage mDataStorage;
 
@@ -53,9 +56,13 @@ public class CreateCommunityFragment extends Fragment {
             CommunityDetails community = new CommunityDetails();
             community.name = ((EditText) mView.findViewById(R.id.community_name)).getText().toString();
             community.description = ((EditText) mView.findViewById(R.id.community_description)).getText().toString();
-            mDataStorage.addCommunity(community);
+            long communityId = mDataStorage.addCommunity(community);
+
+            Log.d(TAG, "Community Created with ID: " + communityId);
+            Bundle bundle = new Bundle();
+            bundle.putLong("community_id", communityId);
             NavHostFragment.findNavController(CreateCommunityFragment.this)
-                    .navigate(R.id.action_confirm_community_create);
+                    .navigate(R.id.action_confirm_community_create, bundle);
             return true;
         }
 
