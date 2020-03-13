@@ -1,6 +1,7 @@
 package org.endcoronavirus.outreach.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
 public class ShowCommunityFragment extends Fragment {
+    private static final String TAG = "ShowCommunityFragment";
+
     private View view;
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
@@ -52,8 +55,11 @@ public class ShowCommunityFragment extends Fragment {
             @Override
             public void onItemClicked(int position) {
                 ContactDetails contact = adapter.getContactAtPosition(position);
+
+                Log.d(TAG, "Contact Selected: " + contact.id + " uri: " + contact.getContactUri());
+
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("contact_uri", contact.getContactUri());
+                bundle.putLong("contact_id", contact.id);
                 NavHostFragment.findNavController(ShowCommunityFragment.this)
                         .navigate(R.id.action_show_contact, bundle);
             }

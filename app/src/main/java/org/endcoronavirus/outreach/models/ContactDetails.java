@@ -4,12 +4,13 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 public class ContactDetails {
-    public long Id;
+    public long id;
     public long communityId;
-    public String Key;
-    public String Name;
+    public long contactId;
+    public String contactKey;
+    public String name;
 
     public Uri getContactUri() {
-        return ContactsContract.Contacts.getLookupUri(Id, Key);
+        return ContactsContract.Contacts.getLookupUri(contactId, contactKey);
     }
 }

@@ -101,9 +101,9 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
                         return;
                     cursor.moveToPosition(position);
                     ContactDetails contactDetails = new ContactDetails();
-                    contactDetails.Id = cursor.getLong(CONTACT_ID_INDEX);
-                    contactDetails.Key = cursor.getString(CONTACT_KEY_INDEX);
-                    contactDetails.Name = cursor.getString(CONTACT_NAME);
+                    contactDetails.contactId = cursor.getLong(CONTACT_ID_INDEX);
+                    contactDetails.contactKey = cursor.getString(CONTACT_KEY_INDEX);
+                    contactDetails.name = cursor.getString(CONTACT_NAME);
                     if (isChecked)
                         selectedContacts.add(contactDetails);
                     else

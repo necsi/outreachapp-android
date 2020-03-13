@@ -125,11 +125,11 @@ public class DataStorage extends ViewModel {
 
     public void addContact(ContactDetails contact) {
         ContentValues value = new ContentValues();
-        value.put(FLD_CONTACTS_CTS_ID, contact.Id);
-        value.put(FLD_CONTACTS_CTS_KEY, contact.Key);
+        value.put(FLD_CONTACTS_CTS_ID, contact.contactId);
+        value.put(FLD_CONTACTS_CTS_KEY, contact.contactKey);
         value.put(FLD_CONTACTS_COMMUNITY_ID, contact.communityId);
         value.put(FLD_CONTACTS_CACHED_URI, contact.getContactUri().toString());
-        value.put(FLD_CONTACTS_CACHED_NAME, contact.Name);
+        value.put(FLD_CONTACTS_CACHED_NAME, contact.name);
         mDb.insert(TABLE_CONTACTS, null, value);
 
         Log.d(TAG, "Record inserted (" + contact.getContactUri().toString() + ")");
@@ -137,19 +137,68 @@ public class DataStorage extends ViewModel {
 
     public ArrayList<ContactDetails> getAllContacts(long communityId) {
         ArrayList<ContactDetails> list = new ArrayList<>();
-        String[] fields = {FLD_CONTACTS_CACHED_NAME, FLD_COMMUNITY_ID, FLD_CONTACTS_CTS_KEY};
+        String[] fields = {FLD_CONTACTS_ID, FLD_CONTACTS_CACHED_NAME,
+                FLD_COMMUNITY_ID, FLD_CONTACTS_CTS_KEY};
         String where = FLD_CONTACTS_COMMUNITY_ID + " =?";
 
         Cursor c = mDb.query(TABLE_CONTACTS, fields, where, new String[]{Long.toString(communityId)},
                 null, null, null);
         while (c.moveToNext()) {
             ContactDetails d = new ContactDetails();
-            d.Name = c.getString(0);
-            d.Id = c.getLong(1);
-            d.Key = c.getString(2);
+            d.id = c.getLong(0);
+            d.name = c.getString(1);
+            d.contactId = c.getLong(2);
+            d.contactKey = c.getString(3);
             list.add(d);
         }
         Log.d(TAG, "Contacts Query[" + communityId + "]: (" + list.size() + " records)");
         return list;
+    }
+
+    public ContactDetails getContactById(long contactId) {
+        String[] fields = {FLD_CONTACTS_CACHED_NAME, FLD_CONTACTS_CTS_ID, FLD_CONTACTS_CTS_KEY, FLD_CONTACTS_COMMUNITY_ID};
+        String where = FLD_CONTACTS_ID + " =?";
+
+        Cursor c = mDb.query(TABLE_CONTACTS, fields, where, new String[]{Long.toString(contactId)},
+                null, null, null);
+
+        if (c.getCount() > 1) {
+            Log.e(TAG, "Something has happened! More than one Contact! ");
+            throw new RuntimeException("This is unexpected!");
+        } else if (c.getCount() == 0) {
+            return null;
+        }
+
+        c.moveToFirst();
+
+        ContactDetails details = new ContactDetails();
+        details.id = contactId;
+        details.name = c.getString(0);
+        details.contactId = c.getLong(1);
+        details.contactKey = c.getString(2);
+        details.communityId = c.getInt(3);
+        return details;
+    }
+
+    public CommunityDetails getCommunityById(long communityId) {
+        String[] fields = {FLD_COMMUNITY_ID, FLD_COMMUNITY_NAME, FLD_COMMUNITY_DESC};
+        String where = FLD_COMMUNITY_ID + " =?";
+
+        Cursor c = mDb.query(TABLE_COMMUNITY, fields, where, new String[]{Long.toString(communityId)},
+                null, null, null);
+
+        if (c.getCount() > 1) {
+            Log.e(TAG, "Something has happened! More than one Contact! ");
+            throw new RuntimeException("This is unexpected!");
+        } else if (c.getCount() == 0) {
+            return null;
+        }
+
+        c.moveToFirst();
+        CommunityDetails comm = new CommunityDetails();
+        comm.id = c.getInt(0);
+        comm.name = c.getString(1);
+        comm.description = c.getString(2);
+        return comm;
     }
 }

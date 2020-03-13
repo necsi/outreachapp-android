@@ -22,14 +22,16 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
+import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
 public class ShowContactFragment extends Fragment {
-    private static final String TAG = "ShowContactFrgment";
+    private static final String TAG = "ShowContactFragment";
 
     private DataStorage mDataStorage;
     private View view;
-    private Uri contactUri;
+    private ContactDetails contactDetails;
+    private String communityName;
 
     private ContentResolver contentResolver;
     private Cursor cursor;
@@ -69,7 +71,20 @@ public class ShowContactFragment extends Fragment {
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
-        contactUri = getArguments().getParcelable("contact_uri");
+        long contactId = getArguments().getLong("contact_id");
+        Log.d(TAG, "Contact ID: " + contactId);
+
+        contactDetails = mDataStorage.getContactById(contactId);
+
+        if (contactDetails == null) {
+            Snackbar.make(view, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
+            return;
+        }
+
+        communityName = mDataStorage.getCommunityById(contactDetails.communityId).name;
+        Log.d(TAG, "Community Name= " + communityName);
+
+        Uri contactUri = contactDetails.getContactUri();
 
         Log.d(TAG, "Getting contact: " + contactUri);
 
@@ -91,10 +106,12 @@ public class ShowContactFragment extends Fragment {
         String id = cursor.getString(CONTACT_FIELD_ID);
         String name = cursor.getString(CONTACT_FIELD_NAME);
 
-        Log.d(TAG, "Id: " + id + " name: " + name);
+        Log.d(TAG, "Id: " + id + " name: " + name + " Community ID: " + contactDetails.communityId);
 
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
+        ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
 
+/*
         Cursor phones = getActivity().getContentResolver().query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI, DATA_PROJECTION,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
@@ -106,6 +123,6 @@ public class ShowContactFragment extends Fragment {
 
             Log.d(TAG, "Phone Number: " + type + " => " + number);
             ((TextView) view.findViewById(R.id.field_phone)).setText(number);
-        }
+        }*/
     }
 }

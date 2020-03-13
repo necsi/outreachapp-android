@@ -61,8 +61,8 @@
             android:id="@+id/action_fragment_show_contact_to_fragment_community_browse"
             app:destination="@id/fragment_community_browse" />
         <argument
-            android:name="contact_uri"
-            app:argType="android.net.Uri" />
+            android:name="contact_id"
+            app:argType="long" />
     </fragment>
 
 </navigation>
