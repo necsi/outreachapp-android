@@ -131,15 +131,10 @@ public class ShowContactFragment extends Fragment {
     }
 
     private void requestCallPermissionsAndCall(Uri number, FragmentActivity activity) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.CALL_PHONE)) {
+        if (shouldShowRequestPermissionRationale(android.Manifest.permission.CALL_PHONE)) {
             // show UI part if you want here to show some rationale !!!
         } else {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.CALL_PHONE},
-                    REQUEST_MAKE_CALL);
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.CALL_PHONE)) {
-        } else {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.CALL_PHONE},
+            requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE},
                     REQUEST_MAKE_CALL);
         }
     }

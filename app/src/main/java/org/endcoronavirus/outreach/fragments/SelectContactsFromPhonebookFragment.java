@@ -96,15 +96,10 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
 
 
     private void requestPermission(Activity activity) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.READ_CONTACTS)) {
+        if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS)) {
             // show UI part if you want here to show some rationale !!!
         } else {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.READ_CONTACTS)) {
-        } else {
-            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_CONTACTS},
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS},
                     REQUEST_READ_CONTACTS);
         }
     }
