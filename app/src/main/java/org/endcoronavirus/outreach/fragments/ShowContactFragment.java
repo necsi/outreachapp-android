@@ -2,6 +2,7 @@ package org.endcoronavirus.outreach.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
+import org.endcoronavirus.outreach.data.ContactDetailsParser;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
@@ -52,12 +55,7 @@ public class ShowContactFragment extends Fragment {
     private static final int CONTACT_FIELD_NAME = 2;
     private static final int CONTACT_FIELD_PIC = 3;
 
-    private static final String[] DATA_PROJECTION = {
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.TYPE
-    };
-    private static final int DATA_FIELD_NUM = 0;
-    private static final int DATA_FIELD_TYPE = 1;
+    private Uri contactUri;
 
     @Nullable
     @Override
@@ -68,6 +66,7 @@ public class ShowContactFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setupView();
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
@@ -84,7 +83,7 @@ public class ShowContactFragment extends Fragment {
         communityName = mDataStorage.getCommunityById(contactDetails.communityId).name;
         Log.d(TAG, "Community Name= " + communityName);
 
-        Uri contactUri = contactDetails.getContactUri();
+        contactUri = contactDetails.getContactUri();
 
         Log.d(TAG, "Getting contact: " + contactUri);
 
@@ -102,6 +101,19 @@ public class ShowContactFragment extends Fragment {
         }
     }
 
+    private void setupView() {
+        Button b = view.findViewById(R.id.action_call);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContactDetailsParser parser = new ContactDetailsParser(getActivity(), contactDetails.contactId);
+                Uri phone = Uri.parse("tel:" + parser.getPhoneNumber(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE));
+                Intent i = new Intent(Intent.ACTION_CALL, phone);
+                startActivity(i);
+            }
+        });
+    }
+
     private void populatePage(Cursor cursor) {
         String id = cursor.getString(CONTACT_FIELD_ID);
         String name = cursor.getString(CONTACT_FIELD_NAME);
@@ -110,19 +122,5 @@ public class ShowContactFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
         ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
-
-/*
-        Cursor phones = getActivity().getContentResolver().query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, DATA_PROJECTION,
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
-
-        Log.d(TAG, "Found: " + phones.getCount());
-        while (phones.moveToNext()) {
-            String number = phones.getString(DATA_FIELD_NUM);
-            int type = phones.getInt(DATA_FIELD_TYPE);
-
-            Log.d(TAG, "Phone Number: " + type + " => " + number);
-            ((TextView) view.findViewById(R.id.field_phone)).setText(number);
-        }*/
     }
 }
