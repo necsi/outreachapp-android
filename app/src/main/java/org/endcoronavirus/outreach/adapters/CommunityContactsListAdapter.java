@@ -46,7 +46,7 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setText(contacts.get(position).Name);
+        holder.setText(contacts.get(position).name);
     }
 
     @Override

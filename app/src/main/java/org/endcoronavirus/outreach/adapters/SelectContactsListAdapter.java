@@ -31,6 +31,8 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     private static final String TAG = "SelectContactsListAdapt";
 
     private Set<ContactDetails> selectedContacts = new HashSet<ContactDetails>();
+    private Set<Long> selectedContactsPosition = new HashSet<>();
+
     private ContentResolver contentResolver;
     private Cursor cursor;
 
@@ -73,6 +75,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
         holder.setText(name);
         holder.setPosition(position);
 
+        holder.setCheckmarkIf(selectedContactsPosition.contains(Long.valueOf(position)));
     }
 
     @Override
@@ -88,26 +91,30 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     class ThisViewHolder extends RecyclerView.ViewHolder {
         private int position;
         private TextView textView;
+        private CheckBox checkBox;
 
         public ThisViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textview);
 
-            CheckBox cb = itemView.findViewById(R.id.selected_checkbox);
-            cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            checkBox = itemView.findViewById(R.id.selected_checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (cursor == null)
                         return;
                     cursor.moveToPosition(position);
                     ContactDetails contactDetails = new ContactDetails();
-                    contactDetails.Id = cursor.getLong(CONTACT_ID_INDEX);
-                    contactDetails.Key = cursor.getString(CONTACT_KEY_INDEX);
-                    contactDetails.Name = cursor.getString(CONTACT_NAME);
-                    if (isChecked)
+                    contactDetails.contactId = cursor.getLong(CONTACT_ID_INDEX);
+                    contactDetails.contactKey = cursor.getString(CONTACT_KEY_INDEX);
+                    contactDetails.name = cursor.getString(CONTACT_NAME);
+                    if (isChecked) {
                         selectedContacts.add(contactDetails);
-                    else
+                        selectedContactsPosition.add(Long.valueOf(position));
+                    } else {
                         selectedContacts.remove(contactDetails);
+                        selectedContactsPosition.remove(Long.valueOf(position));
+                    }
                 }
             });
         }
@@ -118,6 +125,10 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
 
         public void setPosition(int position) {
             this.position = position;
+        }
+
+        public void setCheckmarkIf(boolean checked) {
+            checkBox.setChecked(checked);
         }
     }
 }

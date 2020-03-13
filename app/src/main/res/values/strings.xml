@@ -18,4 +18,7 @@
     <string name="label_contact_phone">Phone:</string>
     <string name="label_contact_freetext_notes">Notes</string>
     <string name="error_cant_read_contact">Can\'t read Contact.</string>
+    <string name="action_history">Check Log</string>
+    <string name="action_call">Make Contact</string>
+    <string name="error_contact_not_found">Contact not found. This is unexpected.</string>
 </resources>
