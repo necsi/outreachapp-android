@@ -1,8 +1,10 @@
 package org.endcoronavirus.outreach.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -17,7 +19,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -30,6 +34,8 @@ import org.endcoronavirus.outreach.models.DataStorage;
 
 public class ShowContactFragment extends Fragment {
     private static final String TAG = "ShowContactFragment";
+
+    private static final int REQUEST_MAKE_CALL = 78;
 
     private DataStorage mDataStorage;
     private View view;
@@ -56,6 +62,7 @@ public class ShowContactFragment extends Fragment {
     private static final int CONTACT_FIELD_PIC = 3;
 
     private Uri contactUri;
+    private Uri numberUri;
 
     @Nullable
     @Override
@@ -107,11 +114,55 @@ public class ShowContactFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 ContactDetailsParser parser = new ContactDetailsParser(getActivity(), contactDetails.contactId);
-                Uri phone = Uri.parse("tel:" + parser.getPhoneNumber(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE));
-                Intent i = new Intent(Intent.ACTION_CALL, phone);
-                startActivity(i);
+                numberUri = Uri.parse("tel:" + parser.getPhoneNumber(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE));
+                tryCall(numberUri);
             }
         });
+    }
+
+    private void tryCall(Uri number) {
+        // FIXME: After granting permissions, the contacts are NOT displayed.
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestCallPermissionsAndCall(number, getActivity());
+        } else {
+            makeCall(number);
+        }
+    }
+
+    private void requestCallPermissionsAndCall(Uri number, FragmentActivity activity) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.CALL_PHONE)) {
+            // show UI part if you want here to show some rationale !!!
+        } else {
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.CALL_PHONE},
+                    REQUEST_MAKE_CALL);
+        }
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.CALL_PHONE)) {
+        } else {
+            ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.CALL_PHONE},
+                    REQUEST_MAKE_CALL);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_MAKE_CALL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    makeCall(numberUri);
+                } else {
+                }
+                return;
+            }
+        }
+    }
+
+    private void makeCall(Uri Number) {
+        Intent i = new Intent(Intent.ACTION_CALL, Number);
+        startActivity(i);
     }
 
     private void populatePage(Cursor cursor) {
