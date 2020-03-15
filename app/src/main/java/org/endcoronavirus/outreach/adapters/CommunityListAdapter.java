@@ -34,7 +34,7 @@ public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdap
         }
     }
 
-    public int getIdAtPosition(int position) {
+    public long getIdAtPosition(int position) {
         return communities.get(position).id;
     }
 

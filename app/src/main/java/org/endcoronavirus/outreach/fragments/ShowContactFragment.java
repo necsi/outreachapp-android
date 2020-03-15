@@ -12,9 +12,13 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.data.ContactDetailsParser;
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
@@ -60,7 +65,7 @@ public class ShowContactFragment extends Fragment {
     private static final int CONTACT_FIELD_KEY = 1;
     private static final int CONTACT_FIELD_NAME = 2;
     private static final int CONTACT_FIELD_PIC = 3;
-
+    private AppState mAppState;
     private Uri contactUri;
     private Uri numberUri;
 
@@ -68,6 +73,7 @@ public class ShowContactFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_show_contact, container, false);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -76,11 +82,11 @@ public class ShowContactFragment extends Fragment {
         setupView();
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
+        mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
 
-        long contactId = getArguments().getLong("contact_id");
-        Log.d(TAG, "Contact ID: " + contactId);
+        Log.d(TAG, "Contact ID: " + mAppState.currentContactId());
 
-        contactDetails = mDataStorage.getContactById(contactId);
+        contactDetails = mDataStorage.getContactById(mAppState.currentContactId());
 
         if (contactDetails == null) {
             Snackbar.make(view, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
@@ -106,6 +112,22 @@ public class ShowContactFragment extends Fragment {
             snackbar.show();
             NavHostFragment.findNavController(this).navigateUp();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_contact_show, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.command_menu_save) {
+            // TODO populate the contact and save
+        }
+        return true;
     }
 
     private void setupView() {
@@ -168,5 +190,6 @@ public class ShowContactFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
         ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
+        ((EditText) view.findViewById(R.id.field_freetext_notes)).setText(contactDetails.notes);
     }
 }
