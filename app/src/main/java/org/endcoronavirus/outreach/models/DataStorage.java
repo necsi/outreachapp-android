@@ -3,6 +3,7 @@ package org.endcoronavirus.outreach.models;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -16,7 +17,7 @@ public class DataStorage extends ViewModel {
     private static final String TAG = "DataStorage";
 
     private static final String DB_NAME = "Outreach";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     private static final String TABLE_COMMUNITY = "Communities";
     private static final String TABLE_CONTACTS = "Contacts";
@@ -52,7 +53,7 @@ public class DataStorage extends ViewModel {
                 @Override
                 public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
                     mDb = db;
-                    if (oldVersion < 2) {
+                    if (oldVersion < DB_VERSION) {
                         createCommunityTable(true);
                         createContactsTable(true);
                     }
@@ -70,7 +71,7 @@ public class DataStorage extends ViewModel {
 
         String sql = "create table " + TABLE_COMMUNITY +
                 "(" + FLD_COMMUNITY_ID + " INTEGER constraint " + TABLE_COMMUNITY + "_pk primary key autoincrement," +
-                FLD_COMMUNITY_NAME + " TEXT not null," +
+                FLD_COMMUNITY_NAME + " TEXT UNIQUE not null," +
                 FLD_COMMUNITY_DESC + " TEXT" +
                 ");" +
                 " create unique index " + TABLE_COMMUNITY + "_" + FLD_COMMUNITY_NAME + "_uindex " +
@@ -87,9 +88,9 @@ public class DataStorage extends ViewModel {
         String sql = "create table " + TABLE_CONTACTS +
                 "(" + FLD_CONTACTS_ID + " INTEGER constraint " + TABLE_CONTACTS + "_pl primary key autoincrement," +
                 FLD_CONTACTS_COMMUNITY_ID + " INTEGER not null," +
-                FLD_CONTACTS_CTS_ID + " INTEGER not null," +
-                FLD_CONTACTS_CTS_KEY + " TEXT not null," +
-                FLD_CONTACTS_CACHED_URI + " TEXT not null," +
+                FLD_CONTACTS_CTS_ID + " INTEGER not null UNIQUE," +
+                FLD_CONTACTS_CTS_KEY + " TEXT not null UNIQUE," +
+                FLD_CONTACTS_CACHED_URI + " TEXT not null UNIQUE," +
                 FLD_CONTACTS_CACHED_NAME + " TEXT not null" +
                 ");" +
                 " create index " + TABLE_CONTACTS + "_" + FLD_CONTACTS_CACHED_NAME + "_index " +
@@ -99,12 +100,12 @@ public class DataStorage extends ViewModel {
         mDb.execSQL(sql);
     }
 
-    public long addCommunity(CommunityDetails community) {
+    public long addCommunity(CommunityDetails community) throws SQLiteConstraintException {
         ContentValues value = new ContentValues();
         value.put(FLD_COMMUNITY_NAME, community.name);
         value.put(FLD_COMMUNITY_DESC, community.description);
-        long id = mDb.insert(TABLE_COMMUNITY, null, value);
 
+        long id = mDb.insertOrThrow(TABLE_COMMUNITY, null, value);
         Log.d(TAG, "Record inserted (" + community.name + ")");
         return id;
     }
