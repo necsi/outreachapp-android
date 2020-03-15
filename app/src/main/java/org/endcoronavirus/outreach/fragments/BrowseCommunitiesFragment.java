@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityListAdapter;
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.DataStorage;
 
 public class BrowseCommunitiesFragment extends Fragment {
@@ -27,6 +28,7 @@ public class BrowseCommunitiesFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private CommunityListAdapter dataAdapter;
     private DataStorage mDataStorage;
+    private AppState mAppState;
 
 
     @Override
@@ -52,11 +54,10 @@ public class BrowseCommunitiesFragment extends Fragment {
         dataAdapter.setOnItemClickListener(new CommunityListAdapter.OnClickListener() {
             @Override
             public void onClick(int position) {
-                int id = dataAdapter.getIdAtPosition(position);
-                Bundle bundle = new Bundle();
-                bundle.putLong("community_id", id);
+                long id = dataAdapter.getIdAtPosition(position);
+                mAppState.selectCommunity(id);
                 NavHostFragment.findNavController(BrowseCommunitiesFragment.this)
-                        .navigate(R.id.action_select_community, bundle);
+                        .navigate(R.id.action_select_community, null);
             }
         });
 
@@ -73,6 +74,11 @@ public class BrowseCommunitiesFragment extends Fragment {
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
         dataAdapter.loadData(mDataStorage);
+        mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
+
+        mAppState.clearCommunity();
+        ;
+        mAppState.clearContact();
     }
 
     @Override

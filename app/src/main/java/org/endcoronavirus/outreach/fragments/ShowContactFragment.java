@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.data.ContactDetailsParser;
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
@@ -60,7 +61,7 @@ public class ShowContactFragment extends Fragment {
     private static final int CONTACT_FIELD_KEY = 1;
     private static final int CONTACT_FIELD_NAME = 2;
     private static final int CONTACT_FIELD_PIC = 3;
-
+    private AppState mAppState;
     private Uri contactUri;
     private Uri numberUri;
 
@@ -76,11 +77,11 @@ public class ShowContactFragment extends Fragment {
         setupView();
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
+        mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
 
-        long contactId = getArguments().getLong("contact_id");
-        Log.d(TAG, "Contact ID: " + contactId);
+        Log.d(TAG, "Contact ID: " + mAppState.currentContactId());
 
-        contactDetails = mDataStorage.getContactById(contactId);
+        contactDetails = mDataStorage.getContactById(mAppState.currentContactId());
 
         if (contactDetails == null) {
             Snackbar.make(view, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);

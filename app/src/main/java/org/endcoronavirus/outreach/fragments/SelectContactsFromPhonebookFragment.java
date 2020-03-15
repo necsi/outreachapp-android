@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.SelectContactsListAdapter;
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
@@ -35,13 +36,13 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
     private SelectContactsListAdapter adapter;
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
-    private long communityId;
+    private AppState mAppState;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        communityId = getArguments().getLong("community_id");
-        Log.d(TAG, "Community ID: " + communityId);
+        mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
+        Log.d(TAG, "Community ID: " + mAppState.currentCommunityId());
 
         view = inflater.inflate(R.layout.fragment_select_contacts_from_phonebook, container, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -79,15 +80,13 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
             Set<ContactDetails> details = adapter.getSelectedContacts();
             Log.d(TAG, "Contacts added: " + details.size());
             for (ContactDetails contactDetails : details) {
-                contactDetails.communityId = communityId;
+                contactDetails.communityId = mAppState.currentCommunityId();
                 mDataStorage.addContact(contactDetails);
             }
 
             // and move to the community screen
-            Bundle bundle = new Bundle();
-            bundle.putLong("community_id", communityId);
             NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_done, bundle);
+                    .navigate(R.id.action_done, null);
             return true;
         }
 

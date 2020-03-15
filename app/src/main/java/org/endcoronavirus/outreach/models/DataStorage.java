@@ -88,9 +88,9 @@ public class DataStorage extends ViewModel {
         String sql = "create table " + TABLE_CONTACTS +
                 "(" + FLD_CONTACTS_ID + " INTEGER constraint " + TABLE_CONTACTS + "_pl primary key autoincrement," +
                 FLD_CONTACTS_COMMUNITY_ID + " INTEGER not null," +
-                FLD_CONTACTS_CTS_ID + " INTEGER not null UNIQUE," +
-                FLD_CONTACTS_CTS_KEY + " TEXT not null UNIQUE," +
-                FLD_CONTACTS_CACHED_URI + " TEXT not null UNIQUE," +
+                FLD_CONTACTS_CTS_ID + " INTEGER not null ," +
+                FLD_CONTACTS_CTS_KEY + " TEXT not null ," +
+                FLD_CONTACTS_CACHED_URI + " TEXT not null ," +
                 FLD_CONTACTS_CACHED_NAME + " TEXT not null" +
                 ");" +
                 " create index " + TABLE_CONTACTS + "_" + FLD_CONTACTS_CACHED_NAME + "_index " +
@@ -101,6 +101,9 @@ public class DataStorage extends ViewModel {
     }
 
     public long addCommunity(CommunityDetails community) throws SQLiteConstraintException {
+        if (community.id != -1)
+            throw new RuntimeException("Community ID should not be set.");
+
         ContentValues value = new ContentValues();
         value.put(FLD_COMMUNITY_NAME, community.name);
         value.put(FLD_COMMUNITY_DESC, community.description);
@@ -110,13 +113,29 @@ public class DataStorage extends ViewModel {
         return id;
     }
 
+    public long updateCommunity(CommunityDetails community) {
+        if (community.id == -1)
+            throw new RuntimeException("Community ID is not set.");
+
+        ContentValues value = new ContentValues();
+        value.put(FLD_COMMUNITY_NAME, community.name);
+        value.put(FLD_COMMUNITY_DESC, community.description);
+
+        mDb.update(TABLE_COMMUNITY, value, FLD_COMMUNITY_ID + "=?", new String[]{
+                Long.toString(community.id)
+        });
+
+        Log.d(TAG, "Record updated (" + community.name + ")");
+        return community.id;
+    }
+
     public ArrayList<CommunityDetails> getAllCommunitiesNames() {
         ArrayList<CommunityDetails> list = new ArrayList<>();
         String[] fields = {FLD_COMMUNITY_ID, FLD_COMMUNITY_NAME};
         Cursor c = mDb.query(TABLE_COMMUNITY, fields, null, null, null, null, null);
         while (c.moveToNext()) {
             CommunityDetails d = new CommunityDetails();
-            d.id = c.getInt(0);
+            d.id = c.getLong(0);
             d.name = c.getString(1);
             list.add(d);
         }
@@ -197,7 +216,7 @@ public class DataStorage extends ViewModel {
 
         c.moveToFirst();
         CommunityDetails comm = new CommunityDetails();
-        comm.id = c.getInt(0);
+        comm.id = c.getLong(0);
         comm.name = c.getString(1);
         comm.description = c.getString(2);
         return comm;

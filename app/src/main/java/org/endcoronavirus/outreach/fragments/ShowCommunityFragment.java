@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityContactsListAdapter;
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
@@ -25,13 +26,13 @@ public class ShowCommunityFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
-    private long communityId;
     private CommunityContactsListAdapter adapter;
+    private AppState mAppState;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        communityId = getArguments().getLong("community_id");
+        mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
         view = inflater.inflate(R.layout.fragment_show_community, container, false);
         return view;
     }
@@ -48,7 +49,7 @@ public class ShowCommunityFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new CommunityContactsListAdapter(mDataStorage, communityId);
+        adapter = new CommunityContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickedListener(new CommunityContactsListAdapter.OnItemClickedListener() {
@@ -57,11 +58,9 @@ public class ShowCommunityFragment extends Fragment {
                 ContactDetails contact = adapter.getContactAtPosition(position);
 
                 Log.d(TAG, "Contact Selected: " + contact.id + " uri: " + contact.getContactUri());
-
-                Bundle bundle = new Bundle();
-                bundle.putLong("contact_id", contact.id);
+                mAppState.selectContact(contact.id);
                 NavHostFragment.findNavController(ShowCommunityFragment.this)
-                        .navigate(R.id.action_show_contact, bundle);
+                        .navigate(R.id.action_show_contact, null);
             }
         });
     }

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.DataStorage;
 import org.endcoronavirus.outreach.service.BackendService;
 import org.endcoronavirus.outreach.service.BackendServiceInterface;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
     private BackendServiceInterface mService;
 
     private DataStorage mDataStorage;
+    private AppState mAppState;
 
     public BackendServiceInterface getService() {
         return mService;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
 
         mDataStorage = new ViewModelProvider(this).get(DataStorage.class);
         mDataStorage.open(this);
+
+        mAppState = new ViewModelProvider(this).get(AppState.class);
 
         // NOTE service has been removed. Check also onStart()
         //startService(new Intent(this, BackendService.class));
