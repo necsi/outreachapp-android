@@ -9,6 +9,7 @@ public class ContactDetails {
     public long contactId;
     public String contactKey;
     public String name;
+    public String notes;
 
     public Uri getContactUri() {
         return ContactsContract.Contacts.getLookupUri(contactId, contactKey);

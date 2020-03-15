@@ -32,6 +32,7 @@ public class DataStorage extends ViewModel {
     private static final String FLD_CONTACTS_CTS_KEY = "contacts_key";
     private static final String FLD_CONTACTS_CACHED_URI = "contacts_uri";
     private static final String FLD_CONTACTS_CACHED_NAME = "name";
+    private static final String FLD_CONTACTS_NOTES = "notes";
 
     private SQLiteOpenHelper mOpenHelper;
     private SQLiteDatabase mDb;
@@ -91,7 +92,8 @@ public class DataStorage extends ViewModel {
                 FLD_CONTACTS_CTS_ID + " INTEGER not null ," +
                 FLD_CONTACTS_CTS_KEY + " TEXT not null ," +
                 FLD_CONTACTS_CACHED_URI + " TEXT not null ," +
-                FLD_CONTACTS_CACHED_NAME + " TEXT not null" +
+                FLD_CONTACTS_CACHED_NAME + " TEXT not null," +
+                FLD_CONTACTS_NOTES + " TEXT" +
                 ");" +
                 " create index " + TABLE_CONTACTS + "_" + FLD_CONTACTS_CACHED_NAME + "_index " +
                 "on " + TABLE_CONTACTS + " (" + FLD_CONTACTS_CACHED_NAME + ");" +
@@ -150,6 +152,7 @@ public class DataStorage extends ViewModel {
         value.put(FLD_CONTACTS_COMMUNITY_ID, contact.communityId);
         value.put(FLD_CONTACTS_CACHED_URI, contact.getContactUri().toString());
         value.put(FLD_CONTACTS_CACHED_NAME, contact.name);
+        value.put(FLD_CONTACTS_NOTES, contact.notes);
         mDb.insert(TABLE_CONTACTS, null, value);
 
         Log.d(TAG, "Record inserted (" + contact.getContactUri().toString() + ")");
@@ -176,7 +179,8 @@ public class DataStorage extends ViewModel {
     }
 
     public ContactDetails getContactById(long contactId) {
-        String[] fields = {FLD_CONTACTS_CACHED_NAME, FLD_CONTACTS_CTS_ID, FLD_CONTACTS_CTS_KEY, FLD_CONTACTS_COMMUNITY_ID};
+        String[] fields = {FLD_CONTACTS_CACHED_NAME, FLD_CONTACTS_CTS_ID,
+                FLD_CONTACTS_CTS_KEY, FLD_CONTACTS_COMMUNITY_ID, FLD_CONTACTS_NOTES};
         String where = FLD_CONTACTS_ID + " =?";
 
         Cursor c = mDb.query(TABLE_CONTACTS, fields, where, new String[]{Long.toString(contactId)},
@@ -197,6 +201,7 @@ public class DataStorage extends ViewModel {
         details.contactId = c.getLong(1);
         details.contactKey = c.getString(2);
         details.communityId = c.getInt(3);
+        details.notes = c.getString(4);
         return details;
     }
 

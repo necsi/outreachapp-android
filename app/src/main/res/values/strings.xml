@@ -22,4 +22,5 @@
     <string name="action_call">Make Contact</string>
     <string name="error_contact_not_found">Contact not found. This is unexpected.</string>
     <string name="error_cant_create_community">An error occurred when adding the community.</string>
+    <string name="command_menu_contact_save">Save</string>
 </resources>

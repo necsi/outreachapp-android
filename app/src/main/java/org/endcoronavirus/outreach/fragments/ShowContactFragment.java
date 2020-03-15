@@ -12,9 +12,13 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,6 +73,7 @@ public class ShowContactFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_show_contact, container, false);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -107,6 +112,22 @@ public class ShowContactFragment extends Fragment {
             snackbar.show();
             NavHostFragment.findNavController(this).navigateUp();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_contact_show, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.command_menu_save) {
+            // TODO populate the contact and save
+        }
+        return true;
     }
 
     private void setupView() {
@@ -169,5 +190,6 @@ public class ShowContactFragment extends Fragment {
 
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
         ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
+        ((EditText) view.findViewById(R.id.field_freetext_notes)).setText(contactDetails.notes);
     }
 }
