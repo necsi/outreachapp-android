@@ -125,7 +125,7 @@ public class ShowContactFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.command_menu_save) {
-            // TODO populate the contact and save
+            saveContact();
         }
         return true;
     }
@@ -143,7 +143,6 @@ public class ShowContactFragment extends Fragment {
     }
 
     private void tryCall(Uri number) {
-        // FIXME: After granting permissions, the contacts are NOT displayed.
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
             requestCallPermissionsAndCall(number, getActivity());
@@ -191,5 +190,11 @@ public class ShowContactFragment extends Fragment {
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
         ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
         ((EditText) view.findViewById(R.id.field_freetext_notes)).setText(contactDetails.notes);
+    }
+
+    private void saveContact() {
+        contactDetails.notes = ((EditText) view.findViewById(R.id.field_freetext_notes)).getText().toString();
+
+        mDataStorage.updateContact(contactDetails);
     }
 }
