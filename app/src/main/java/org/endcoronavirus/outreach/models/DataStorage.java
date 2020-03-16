@@ -226,4 +226,15 @@ public class DataStorage extends ViewModel {
         comm.description = c.getString(2);
         return comm;
     }
+
+    public void updateContact(ContactDetails contactDetails) {
+        if (contactDetails.id <= 0)
+            throw new RuntimeException("Contact Details ID is not set.");
+
+        ContentValues values = new ContentValues();
+        values.put(FLD_CONTACTS_NOTES, contactDetails.notes);
+
+        mDb.update(TABLE_CONTACTS, values, FLD_CONTACTS_ID + "=?",
+                new String[]{Long.toString(contactDetails.id)});
+    }
 }
