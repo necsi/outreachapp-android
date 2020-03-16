@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -74,6 +75,13 @@ public class ShowContactFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_show_contact, container, false);
         setHasOptionsMenu(true);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                saveContact();
+                NavHostFragment.findNavController(ShowContactFragment.this).popBackStack();
+            }
+        });
         return view;
     }
 
@@ -126,6 +134,7 @@ public class ShowContactFragment extends Fragment {
 
         if (id == R.id.command_menu_save) {
             saveContact();
+            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG);
         }
         return true;
     }
