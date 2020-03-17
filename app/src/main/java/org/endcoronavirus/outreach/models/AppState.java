@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel;
 
 public class AppState extends ViewModel {
 
+    private static final String TAG = "AppState";
+
     private long mCommunityId = -1;
     private long mContactId = -1;
 

@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,8 +62,6 @@ public class BrowseCommunitiesFragment extends Fragment {
             }
         });
 
-        recyclerView.setAdapter(dataAdapter);
-
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +72,21 @@ public class BrowseCommunitiesFragment extends Fragment {
         });
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
-        dataAdapter.loadData(mDataStorage);
+
+        AsyncTask<Void, Void, Integer> loader = new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... voids) {
+                dataAdapter.loadData(mDataStorage);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Integer integer) {
+                super.onPostExecute(integer);
+                recyclerView.setAdapter(dataAdapter);
+            }
+        };
+        loader.execute();
         mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
 
         mAppState.clearCommunity();

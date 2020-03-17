@@ -12,11 +12,9 @@ import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-import java.util.ArrayList;
-
 public class CommunityContactsListAdapter extends RecyclerView.Adapter<CommunityContactsListAdapter.ViewHolder> {
 
-    private ArrayList<ContactDetails> contacts;
+    private ContactDetails[] contacts;
     private OnItemClickedListener listener;
 
     public interface OnItemClickedListener {
@@ -28,7 +26,7 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
     }
 
     public ContactDetails getContactAtPosition(int position) {
-        return contacts.get(position);
+        return contacts[position];
     }
 
     public void setOnItemClickedListener(OnItemClickedListener listener) {
@@ -46,12 +44,12 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setText(contacts.get(position).name);
+        holder.setText(contacts[position].name);
     }
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return contacts.length;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

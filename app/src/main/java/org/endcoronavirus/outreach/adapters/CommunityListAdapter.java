@@ -13,11 +13,9 @@ import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.CommunityDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-import java.util.ArrayList;
-
 public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdapter.ThisViewHolder> {
     private static final String TAG = "CommunityListAdapter";
-    ArrayList<CommunityDetails> communities;
+    CommunityDetails[] communities;
     private OnClickListener listener;
 
 
@@ -35,7 +33,7 @@ public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdap
     }
 
     public long getIdAtPosition(int position) {
-        return communities.get(position).id;
+        return communities[position].id;
     }
 
     @NonNull
@@ -48,13 +46,13 @@ public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdap
 
     @Override
     public void onBindViewHolder(@NonNull ThisViewHolder holder, int position) {
-        holder.setText(communities.get(position).name);
+        holder.setText(communities[position].name);
     }
 
     @Override
     public int getItemCount() {
         if (communities != null)
-            return communities.size();
+            return communities.length;
         return 0;
     }
 

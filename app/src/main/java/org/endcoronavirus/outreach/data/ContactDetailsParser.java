@@ -32,9 +32,10 @@ public class ContactDetailsParser {
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI, DATA_PROJECTION,
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contact_ID, null, null);
 
-        Log.d(TAG, "Found: " + phones.getCount());
+        Log.d(TAG, "Contact Id: " + contact_ID + " Found: " + phones.getCount());
         while (phones.moveToNext()) {
             String number = phones.getString(DATA_FIELD_NUM);
+            Log.d(TAG, "=>" + number);
             int type = phones.getInt(DATA_FIELD_TYPE);
 
             if (type == desired_type)

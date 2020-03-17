@@ -1,6 +1,7 @@
 package org.endcoronavirus.outreach.fragments;
 
 import android.database.sqlite.SQLiteConstraintException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,27 +60,43 @@ public class CreateCommunityFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.command_menu_confirm) {
-            CommunityDetails community = new CommunityDetails();
-            if (mAppState.isCommunityIdAvailable())
-                community.id = mAppState.currentCommunityId();
-            community.name = ((EditText) mView.findViewById(R.id.community_name)).getText().toString();
-            community.description = ((EditText) mView.findViewById(R.id.community_description)).getText().toString();
+            AsyncTask<Void, Void, Boolean> updateTask = new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(Void... voids) {
+                    CommunityDetails community = new CommunityDetails();
+                    if (mAppState.isCommunityIdAvailable())
+                        community.id = mAppState.currentCommunityId();
+                    community.name = ((EditText) mView.findViewById(R.id.community_name)).getText().toString();
+                    community.description = ((EditText) mView.findViewById(R.id.community_description)).getText().toString();
 
-            try {
-                if (!mAppState.isCommunityIdAvailable()) {
-                    long commid = mDataStorage.addCommunity(community);
-                    mAppState.selectCommunity(commid);
-                    community.id = commid;
-                    Log.d(TAG, "Community Created with ID: " + commid);
-                } else {
-                    mDataStorage.updateCommunity(community);
+                    try {
+                        if (!mAppState.isCommunityIdAvailable()) {
+                            long commid = mDataStorage.addCommunity(community);
+                            mAppState.selectCommunity(commid);
+                            community.id = commid;
+                            Log.d(TAG, "Community Created with ID: " + commid);
+                        } else {
+                            mDataStorage.updateCommunity(community);
+                        }
+                    } catch (SQLiteConstraintException x) {
+                        Log.e(TAG, "Insert failed: " + x.toString());
+                        return false;
+                    }
+                    return true;
                 }
-            } catch (SQLiteConstraintException x) {
-                Snackbar.make(mView, R.string.error_cant_create_community, Snackbar.LENGTH_LONG).show();
-                return false;
-            }
-            NavHostFragment.findNavController(CreateCommunityFragment.this)
-                    .navigate(R.id.action_confirm_community_create, null);
+
+                @Override
+                protected void onPostExecute(Boolean ok) {
+                    Log.d(TAG, "Create Community returned: " + ok);
+                    if (ok) {
+                        NavHostFragment.findNavController(CreateCommunityFragment.this)
+                                .navigate(R.id.action_confirm_community_create, null);
+                    } else {
+                        Snackbar.make(mView, R.string.error_cant_create_community, Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            };
+            updateTask.execute();
             return true;
         }
 

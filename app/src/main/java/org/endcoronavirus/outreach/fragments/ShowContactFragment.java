@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -69,6 +70,7 @@ public class ShowContactFragment extends Fragment {
     private AppState mAppState;
     private Uri contactUri;
     private Uri numberUri;
+    private View mView;
 
     @Nullable
     @Override
@@ -87,6 +89,7 @@ public class ShowContactFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mView = view;
         setupView();
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
@@ -94,32 +97,35 @@ public class ShowContactFragment extends Fragment {
 
         Log.d(TAG, "Contact ID: " + mAppState.currentContactId());
 
-        contactDetails = mDataStorage.getContactById(mAppState.currentContactId());
+        AsyncTask<Void, Void, Boolean> loaderTask = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                if (!load())
+                    return false;
+                contactDetails = mDataStorage.getContactById(mAppState.currentContactId());
 
-        if (contactDetails == null) {
-            Snackbar.make(view, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
-            return;
-        }
+                if (contactDetails == null) {
+                    return false;
+                }
+                communityName = mDataStorage.getCommunityById(contactDetails.communityId).name;
+                if (communityName == null) {
+                    return false;
+                }
 
-        communityName = mDataStorage.getCommunityById(contactDetails.communityId).name;
-        Log.d(TAG, "Community Name= " + communityName);
+                Log.d(TAG, "Community Name= " + communityName);
+                return true;
+            }
 
-        contactUri = contactDetails.getContactUri();
-
-        Log.d(TAG, "Getting contact: " + contactUri);
-
-        contentResolver = getActivity().getContentResolver();
-        cursor = contentResolver.query(contactUri, CONTACT_PROJECTION, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            populatePage(cursor);
-        } else {
-            Snackbar snackbar = Snackbar
-                    .make(view, R.string.error_cant_read_contact, Snackbar.LENGTH_LONG);
-
-            snackbar.show();
-            NavHostFragment.findNavController(this).navigateUp();
-        }
+            @Override
+            protected void onPostExecute(Boolean ok) {
+                if (!ok) {
+                    Snackbar.make(mView, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
+                    return;
+                }
+                setupData();
+            }
+        };
+        loaderTask.execute();
     }
 
     @Override
@@ -146,6 +152,7 @@ public class ShowContactFragment extends Fragment {
             public void onClick(View v) {
                 ContactDetailsParser parser = new ContactDetailsParser(getActivity(), contactDetails.contactId);
                 numberUri = Uri.parse("tel:" + parser.getPhoneNumber(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE));
+                Log.d(TAG, "Contact: " + contactDetails.contactId + " " + contactDetails.name + "found: " + numberUri.toString());
                 tryCall(numberUri);
             }
         });
@@ -204,6 +211,37 @@ public class ShowContactFragment extends Fragment {
     private void saveContact() {
         contactDetails.notes = ((EditText) view.findViewById(R.id.field_freetext_notes)).getText().toString();
 
-        mDataStorage.updateContact(contactDetails);
+        AsyncTask<Void, Void, Boolean> saveTask = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                mDataStorage.updateContact(contactDetails);
+                return null;
+            }
+        };
+        saveTask.execute();
+    }
+
+    private Boolean load() {
+        return true;
+    }
+
+    private void setupData() {
+        contactUri = contactDetails.getContactUri();
+
+        Log.d(TAG, "Getting contact: " + contactUri);
+
+        contentResolver = getActivity().getContentResolver();
+        cursor = contentResolver.query(contactUri, CONTACT_PROJECTION, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            populatePage(cursor);
+        } else {
+            Snackbar snackbar = Snackbar
+                    .make(view, R.string.error_cant_read_contact, Snackbar.LENGTH_LONG);
+
+            snackbar.show();
+            NavHostFragment.findNavController(this).navigateUp();
+        }
+
     }
 }
