@@ -2,6 +2,7 @@ package org.endcoronavirus.outreach.fragments;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +54,6 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         setHasOptionsMenu(true);
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
-        // FIXME: After granting permissions, the contacts are NOT displayed.
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermission(getActivity());
@@ -76,18 +76,7 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.command_menu_confirm) {
-            // add all selected contacts to community
-            Set<ContactDetails> details = adapter.getSelectedContacts();
-            Log.d(TAG, "Contacts added: " + details.size());
-            for (ContactDetails contactDetails : details) {
-                contactDetails.communityId = mAppState.currentCommunityId();
-                mDataStorage.addContact(contactDetails);
-            }
-
-            // and move to the community screen
-            NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_done, null);
-            return true;
+            addContacts();
         }
 
         return super.onOptionsItemSelected(item);
@@ -124,5 +113,30 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         adapter = new SelectContactsListAdapter();
         adapter.startReadContacts(getActivity());
         recyclerView.setAdapter(adapter);
+    }
+
+    private void addContacts() {
+        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                // add all selected contacts to community
+                Set<ContactDetails> details = adapter.getSelectedContacts();
+                Log.d(TAG, "Contacts added: " + details.size());
+                for (ContactDetails contactDetails : details) {
+                    contactDetails.communityId = mAppState.currentCommunityId();
+                    mDataStorage.addContact(contactDetails);
+                }
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                // and move to the community screen
+                NavHostFragment.findNavController(SelectContactsFromPhonebookFragment.this)
+                        .navigate(R.id.action_done, null);
+            }
+        };
+        task.execute();
     }
 }

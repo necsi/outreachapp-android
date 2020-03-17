@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,19 +50,33 @@ public class ShowCommunityFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new CommunityContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemClickedListener(new CommunityContactsListAdapter.OnItemClickedListener() {
+        AsyncTask<Void, Void, Boolean> loadTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
-            public void onItemClicked(int position) {
-                ContactDetails contact = adapter.getContactAtPosition(position);
-
-                Log.d(TAG, "Contact Selected: " + contact.id + " uri: " + contact.getContactUri());
-                mAppState.selectContact(contact.id);
-                NavHostFragment.findNavController(ShowCommunityFragment.this)
-                        .navigate(R.id.action_show_contact, null);
+            protected Boolean doInBackground(Void... voids) {
+                adapter = new CommunityContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
+                return true;
             }
-        });
+
+            @Override
+            protected void onPostExecute(Boolean ok) {
+                if (ok) {
+                    recyclerView.setAdapter(adapter);
+
+                    adapter.setOnItemClickedListener(new CommunityContactsListAdapter.OnItemClickedListener() {
+                        @Override
+                        public void onItemClicked(int position) {
+                            ContactDetails contact = adapter.getContactAtPosition(position);
+
+                            Log.d(TAG, "Contact Selected: " + contact.id + " uri: " + contact.getContactUri());
+                            mAppState.selectContact(contact.id);
+                            NavHostFragment.findNavController(ShowCommunityFragment.this)
+                                    .navigate(R.id.action_show_contact, null);
+                        }
+                    });
+                }
+            }
+        };
+        loadTask.execute();
     }
+
 }
