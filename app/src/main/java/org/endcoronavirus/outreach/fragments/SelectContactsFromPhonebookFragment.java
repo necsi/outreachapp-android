@@ -137,10 +137,10 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
     }
 
     private void startReadContacts() {
-        adapter = new PhonebookContactListAdapter();
+        adapter = new PhonebookContactListAdapter(getActivity());
         PhonebookContactListAdapter.Filter filter = new PhonebookContactListAdapter.Filter();
         adapter.setFilter(filter);
-        adapter.startReadContacts(getActivity());
+        adapter.startReadContacts();
         recyclerView.setAdapter(adapter);
     }
 

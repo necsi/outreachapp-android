@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,6 +36,7 @@ public class ShowCommunityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
         view = inflater.inflate(R.layout.fragment_show_community, container, false);
         return view;
@@ -79,4 +83,20 @@ public class ShowCommunityFragment extends Fragment {
         loadTask.execute();
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_show_community, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_import_contacts) {
+            NavHostFragment.findNavController(ShowCommunityFragment.this)
+                    .navigate(R.id.action_import_contacts, null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

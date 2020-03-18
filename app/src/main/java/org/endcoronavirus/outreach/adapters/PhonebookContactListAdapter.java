@@ -44,6 +44,10 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
 
     private Filter filter;
 
+    public PhonebookContactListAdapter(Context context) {
+        contentResolver = context.getContentResolver();
+    }
+
     @SuppressLint("InlinedApi")
     private static final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
@@ -66,8 +70,7 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
     private static final String SELECTION =
             FIELD_NAME + " LIKE ?";
 
-    public void startReadContacts(Context context) {
-        contentResolver = context.getContentResolver();
+    public void startReadContacts() {
         refresh();
     }
 

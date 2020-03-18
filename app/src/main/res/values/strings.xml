@@ -26,4 +26,5 @@
     <string name="message_contact_save_done">Contact saved.</string>
     <string name="command_menu_filter">Filter</string>
     <string name="search_title">Search</string>
+    <string name="action_import_contacts">Import</string>
 </resources>
