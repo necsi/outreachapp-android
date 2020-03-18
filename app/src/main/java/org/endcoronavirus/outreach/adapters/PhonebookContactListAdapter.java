@@ -26,7 +26,13 @@ import java.util.Set;
 /**
  *
  */
-public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContactsListAdapter.ThisViewHolder> {
+public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookContactListAdapter.ThisViewHolder> {
+
+    public static class Filter {
+        public boolean starredFirst;
+        public boolean withPhonesOnly;
+        public String filterString;
+    }
 
     private static final String TAG = "SelectContactsListAdapt";
 
@@ -35,6 +41,8 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
 
     private ContentResolver contentResolver;
     private Cursor cursor;
+
+    private Filter filter;
 
     @SuppressLint("InlinedApi")
     private static final String[] PROJECTION = {
@@ -51,11 +59,47 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     private static final int CONTACT_KEY_INDEX = 1;
     private static final int CONTACT_NAME = 2;
 
+    @SuppressLint("InlinedApi")
+    private static final String FIELD_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
+
+    private static final String SELECTION =
+            FIELD_NAME + " LIKE ?";
+
     public void startReadContacts(Context context) {
         contentResolver = context.getContentResolver();
+        refresh();
+    }
+
+    private void refresh() {
+        String selectionQuery = null;
+        String[] selectionArgs = null;
+        if (filter != null && filter.filterString != null) {
+            selectionQuery = SELECTION;
+            selectionArgs = new String[]{"%" + filter.filterString + "%"};
+        }
+
+        String sortOrder = FIELD_NAME;
         cursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI,
-                PROJECTION, null, null, null);
+                PROJECTION, selectionQuery, selectionArgs, sortOrder);
+
         Log.d(TAG, "Cursor ready: " + cursor.getCount());
+    }
+
+    public void setFilter(Filter filter) {
+        this.filter = filter;
+        refresh();
+        notifyDataSetChanged();
+    }
+
+    public void clearFilter() {
+        filter = null;
+        refresh();
+        notifyDataSetChanged();
+    }
+
+    public Filter getFilter() {
+        return filter;
     }
 
     @NonNull

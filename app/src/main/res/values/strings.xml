@@ -24,4 +24,6 @@
     <string name="error_cant_create_community">An error occurred when adding the community.</string>
     <string name="command_menu_contact_save">Save</string>
     <string name="message_contact_save_done">Contact saved.</string>
+    <string name="command_menu_filter">Filter</string>
+    <string name="search_title">Search</string>
 </resources>
