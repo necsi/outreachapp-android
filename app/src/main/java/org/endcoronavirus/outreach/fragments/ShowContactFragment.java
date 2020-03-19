@@ -3,9 +3,12 @@ package org.endcoronavirus.outreach.fragments;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -38,6 +42,9 @@ import org.endcoronavirus.outreach.data.ContactDetailsParser;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ShowContactFragment extends Fragment {
     private static final String TAG = "ShowContactFragment";
@@ -119,7 +126,7 @@ public class ShowContactFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean ok) {
                 if (!ok) {
-                    Snackbar.make(mView, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
+                    Snackbar.make(mView, R.string.error_contact_not_found, Snackbar.LENGTH_LONG).show();
                     return;
                 }
                 setupData();
@@ -140,7 +147,7 @@ public class ShowContactFragment extends Fragment {
 
         if (id == R.id.command_menu_save) {
             saveContact();
-            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG);
+            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG).show();
         }
         return true;
     }
@@ -206,6 +213,23 @@ public class ShowContactFragment extends Fragment {
         ((TextView) view.findViewById(R.id.field_name)).setText(name);
         ((TextView) view.findViewById(R.id.field_community)).setText(communityName);
         ((EditText) view.findViewById(R.id.field_freetext_notes)).setText(contactDetails.notes);
+
+        Bitmap photo = BitmapFactory.decodeResource(getContext().getResources(),
+                android.R.mipmap.sym_def_app_icon);
+
+        try {
+            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContext().getContentResolver(),
+                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactDetails.contactId));
+
+            if (inputStream != null) {
+                photo = BitmapFactory.decodeStream(inputStream);
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ((ImageView) view.findViewById(R.id.contact_picture)).setImageBitmap(photo);
     }
 
     private void saveContact() {

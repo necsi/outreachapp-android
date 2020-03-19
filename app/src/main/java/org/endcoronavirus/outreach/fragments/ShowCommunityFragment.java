@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -32,6 +33,7 @@ public class ShowCommunityFragment extends Fragment {
     private DataStorage mDataStorage;
     private CommunityContactsListAdapter adapter;
     private AppState mAppState;
+    private String communityName;
 
     @Nullable
     @Override
@@ -58,6 +60,7 @@ public class ShowCommunityFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 adapter = new CommunityContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
+                communityName = mDataStorage.getCommunityById(mAppState.currentCommunityId()).name;
                 return true;
             }
 
@@ -77,6 +80,8 @@ public class ShowCommunityFragment extends Fragment {
                                     .navigate(R.id.action_show_contact, null);
                         }
                     });
+
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(communityName);
                 }
             }
         };

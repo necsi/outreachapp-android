@@ -27,4 +27,5 @@
     <string name="command_menu_filter">Filter</string>
     <string name="search_title">Search</string>
     <string name="action_import_contacts">Import</string>
+    <string name="fragment_title_browse_communities">Communities</string>
 </resources>
