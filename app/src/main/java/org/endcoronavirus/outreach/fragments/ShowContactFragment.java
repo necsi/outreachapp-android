@@ -126,7 +126,7 @@ public class ShowContactFragment extends Fragment {
             @Override
             protected void onPostExecute(Boolean ok) {
                 if (!ok) {
-                    Snackbar.make(mView, R.string.error_contact_not_found, Snackbar.LENGTH_LONG);
+                    Snackbar.make(mView, R.string.error_contact_not_found, Snackbar.LENGTH_LONG).show();
                     return;
                 }
                 setupData();
@@ -147,7 +147,7 @@ public class ShowContactFragment extends Fragment {
 
         if (id == R.id.command_menu_save) {
             saveContact();
-            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG);
+            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG).show();
         }
         return true;
     }
