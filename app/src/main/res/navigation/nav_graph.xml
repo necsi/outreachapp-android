@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_show_contact"
             app:destination="@+id/fragment_show_contact" />
+        <action
+            android:id="@+id/action_import_contacts"
+            app:destination="@id/fragment_select_contacts" />
     </fragment>
     <fragment
         android:id="@+id/fragment_show_contact"

@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,8 +22,10 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.endcoronavirus.outreach.R;
-import org.endcoronavirus.outreach.adapters.SelectContactsListAdapter;
+import org.endcoronavirus.outreach.adapters.PhonebookContactListAdapter;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
@@ -34,7 +37,7 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
     private static final String TAG = "SelectContactsFrg";
 
     private View view;
-    private SelectContactsListAdapter adapter;
+    private PhonebookContactListAdapter adapter;
     private RecyclerView recyclerView;
     private DataStorage mDataStorage;
     private AppState mAppState;
@@ -46,6 +49,15 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         Log.d(TAG, "Community ID: " + mAppState.currentCommunityId());
 
         view = inflater.inflate(R.layout.fragment_select_contacts_from_phonebook, container, false);
+
+        FloatingActionButton fab = view.findViewById(R.id.action_next);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addContacts();
+            }
+        });
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.contacts_list);
         recyclerView.setHasFixedSize(true);
@@ -66,8 +78,24 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_community_create, menu);
+        inflater.inflate(R.menu.menu_import_contacts, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setFilterString(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setFilterString(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -75,8 +103,8 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.command_menu_confirm) {
-            addContacts();
+        if (id == R.id.command_menu_filter) {
+            manageFilter();
         }
 
         return super.onOptionsItemSelected(item);
@@ -98,7 +126,6 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_READ_CONTACTS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // CHECKTHIS: probably the bug lies here.
                     startReadContacts();
                 } else {
                     // permission denied,Disable the
@@ -110,8 +137,10 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
     }
 
     private void startReadContacts() {
-        adapter = new SelectContactsListAdapter();
-        adapter.startReadContacts(getActivity());
+        adapter = new PhonebookContactListAdapter(getActivity());
+        PhonebookContactListAdapter.Filter filter = new PhonebookContactListAdapter.Filter();
+        adapter.setFilter(filter);
+        adapter.startReadContacts();
         recyclerView.setAdapter(adapter);
     }
 
@@ -139,4 +168,15 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         };
         task.execute();
     }
+
+    private void setFilterString(String filterString) {
+        PhonebookContactListAdapter.Filter filter = adapter.getFilter();
+        filter.filterString = filterString;
+        adapter.setFilter(filter);
+    }
+
+    private void manageFilter() {
+
+    }
+
 }
