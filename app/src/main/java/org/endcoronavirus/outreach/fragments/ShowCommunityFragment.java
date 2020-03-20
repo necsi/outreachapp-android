@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach.fragments;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,12 +13,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityContactsListAdapter;
@@ -97,11 +101,52 @@ public class ShowCommunityFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_import_contacts) {
-            NavHostFragment.findNavController(ShowCommunityFragment.this)
-                    .navigate(R.id.action_import_contacts, null);
-            return true;
+
+        switch (id) {
+            case R.id.action_import_contacts:
+                NavHostFragment.findNavController(ShowCommunityFragment.this)
+                        .navigate(R.id.action_import_contacts, null);
+                return true;
+
+            case R.id.action_delete:
+                return doActionDelete();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean doActionDelete() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.message_title_confirm_delete)
+                .setMessage(R.string.message_confirm_delete)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+                            @Override
+                            protected Boolean doInBackground(Void... voids) {
+                                int numdeleted = mDataStorage.deleteCommunity(mAppState.currentCommunityId());
+                                return numdeleted == 1;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Boolean ok) {
+                                if (ok) {
+                                    NavHostFragment.findNavController(ShowCommunityFragment.this).navigateUp();
+                                } else {
+                                    Snackbar.make(view, R.string.message_error_cant_delete, Snackbar.LENGTH_LONG).show();
+                                }
+                            }
+                        };
+                        task.execute();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+        return true;
     }
 }

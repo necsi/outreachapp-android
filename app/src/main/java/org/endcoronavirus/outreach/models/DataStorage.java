@@ -54,6 +54,10 @@ public class DataStorage extends ViewModel {
         return community.id;
     }
 
+    public int deleteCommunity(long id) {
+        return mDb.communityDao().deleteCommunity(getCommunityById(id));
+    }
+
     public CommunityDetails[] getAllCommunitiesNames() {
         return mDb.communityDao().getAllCommunitiesNames();
     }
