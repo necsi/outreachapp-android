@@ -110,6 +110,8 @@ public class ShowCommunityFragment extends Fragment {
 
             case R.id.action_delete:
                 return doActionDelete();
+            case R.id.action_edit:
+                return doActionEdit();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -147,6 +149,11 @@ public class ShowCommunityFragment extends Fragment {
                     }
                 })
                 .show();
+        return true;
+    }
+
+    private boolean doActionEdit() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_community_edit);
         return true;
     }
 }

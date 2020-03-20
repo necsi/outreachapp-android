@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_community_create"
-        android:name="org.endcoronavirus.outreach.fragments.CreateCommunityFragment"
+        android:name="org.endcoronavirus.outreach.fragments.EditCommunityFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_community_create">
         <action
@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_import_contacts"
             app:destination="@id/fragment_select_contacts" />
+        <action
+            android:id="@+id/action_community_edit"
+            app:destination="@id/fragment_community_create" />
     </fragment>
     <fragment
         android:id="@+id/fragment_show_contact"
