@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -96,6 +97,21 @@ public class ShowCommunityFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_show_community, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setFilterString(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setFilterString(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -156,4 +172,22 @@ public class ShowCommunityFragment extends Fragment {
         NavHostFragment.findNavController(this).navigate(R.id.action_community_edit);
         return true;
     }
+
+    private void setFilterString(final String filterString) {
+        AsyncTask<Void, Void, Boolean> refreshTask = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                adapter.setFilterString(filterString);
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                adapter.notifyDataSetChanged();
+            }
+        };
+        refreshTask.execute();
+    }
+
 }

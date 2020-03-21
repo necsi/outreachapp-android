@@ -70,6 +70,10 @@ public class DataStorage extends ViewModel {
         return mDb.contactDetailsDao().getAllContactsByCommunity(communityId);
     }
 
+    public ContactDetails[] searchContactsForPattern(String pattern) {
+        return mDb.contactDetailsDao().searchContactsForPattern(pattern);
+    }
+
     public ContactDetails getContactById(long contactId) {
         return mDb.contactDetailsDao().getContactById(contactId);
     }

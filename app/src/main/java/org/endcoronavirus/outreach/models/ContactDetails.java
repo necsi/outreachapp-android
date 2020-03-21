@@ -13,6 +13,8 @@ import androidx.room.PrimaryKey;
 public class ContactDetails {
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String COLUMN_COMMUNITY_ID = "community";
+    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_NOTES = "notes";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ID)
@@ -27,10 +29,10 @@ public class ContactDetails {
     @ColumnInfo(name = "contacts_key")
     public String contactKey;
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = COLUMN_NAME)
     public String name;
 
-    @ColumnInfo(name = "notes")
+    @ColumnInfo(name = COLUMN_NOTES)
     public String notes;
 
     @Ignore
