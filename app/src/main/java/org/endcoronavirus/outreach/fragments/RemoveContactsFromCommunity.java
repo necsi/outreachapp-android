@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +20,19 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityContactsListAdapter;
+import org.endcoronavirus.outreach.adapters.PhonebookContactListAdapter;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-public class ShowCommunityFragment extends Fragment {
-    private static final String TAG = "ShowCommunityFragment";
+import java.util.Set;
+
+public class RemoveContactsFromCommunity extends Fragment {
+    private static final String TAG = "RemoveContactsFragment";
 
     private View view;
     private RecyclerView recyclerView;
@@ -38,9 +44,9 @@ public class ShowCommunityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
-        view = inflater.inflate(R.layout.fragment_show_community, container, false);
+        view = inflater.inflate(R.layout.fragment_remove_contacts, container, false);
+
         return view;
     }
 
@@ -50,10 +56,17 @@ public class ShowCommunityFragment extends Fragment {
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.contacts_list);
-        recyclerView.setHasFixedSize(true);
+        FloatingActionButton fab = view.findViewById(R.id.action_remove_confirm);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeContacts();
+            }
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.contacts_list);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
 
         AsyncTask<Void, Void, Boolean> loadTask = new AsyncTask<Void, Void, Boolean>() {
@@ -76,7 +89,7 @@ public class ShowCommunityFragment extends Fragment {
 
                             Log.d(TAG, "Contact Selected: " + contact.id + " uri: " + contact.getContactUri());
                             mAppState.selectContact(contact.id);
-                            NavHostFragment.findNavController(ShowCommunityFragment.this)
+                            NavHostFragment.findNavController(RemoveContactsFromCommunity.this)
                                     .navigate(R.id.action_show_contact, null);
                         }
                     });
@@ -90,23 +103,70 @@ public class ShowCommunityFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_show_community, menu);
+        inflater.inflate(R.menu.menu_remove_contacts, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setFilterString(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setFilterString(newText);
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_import_contacts) {
-            NavHostFragment.findNavController(ShowCommunityFragment.this)
-                    .navigate(R.id.action_import_contacts, null);
-            return true;
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.command_menu_filter) {
+            manageFilter();
         }
-        else if (id == R.id.action_remove_contacts) {
-            NavHostFragment.findNavController(ShowCommunityFragment.this)
-                    .navigate(R.id.action_remove_contacts, null);
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setFilterString(String filterString) {
+        //PhonebookContactListAdapter.Filter filter = adapter.getFilter();
+        //filter.filterString = filterString;
+        //adapter.setFilter(filter);
+    }
+
+    private void manageFilter() {
+
+    }
+
+    public void removeContacts() {
+        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                // add all selected contacts to community
+                //Set<ContactDetails> details = adapter.getSelectedContacts();
+                //Log.d(TAG, "Contacts added: " + details.size());
+                //for (ContactDetails contactDetails : details) {
+                //    contactDetails.communityId = mAppState.currentCommunityId();
+                //    mDataStorage.addContact(contactDetails);
+                //}
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                // and move to the community screen
+                NavHostFragment.findNavController(RemoveContactsFromCommunity.this)
+                        .navigate(R.id.action_remove_confirm, null);
+            }
+        };
+        task.execute();
     }
 }

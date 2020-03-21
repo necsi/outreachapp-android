@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_import_contacts"
             app:destination="@id/fragment_select_contacts" />
+        <action
+            android:id="@+id/action_remove_contacts"
+            app:destination="@id/fragment_remove_contacts" />
     </fragment>
     <fragment
         android:id="@+id/fragment_show_contact"
@@ -66,6 +69,14 @@
         <argument
             android:name="contact_id"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_remove_contacts"
+        android:name="org.endcoronavirus.outreach.fragments.RemoveContactsFromCommunity"
+        android:label="@string/label_remove_contacts" >
+        <action
+            android:id="@+id/action_remove_confirm"
+            app:destination="@id/fragment_show_community" />
     </fragment>
 
 </navigation>
