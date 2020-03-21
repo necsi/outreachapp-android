@@ -239,7 +239,7 @@ public class ShowContactFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 mDataStorage.updateContact(contactDetails);
-                return null;
+                return true;
             }
         };
         saveTask.execute();

@@ -54,6 +54,10 @@ public class DataStorage extends ViewModel {
         return community.id;
     }
 
+    public int deleteCommunity(long id) {
+        return mDb.communityDao().deleteCommunity(getCommunityById(id));
+    }
+
     public CommunityDetails[] getAllCommunitiesNames() {
         return mDb.communityDao().getAllCommunitiesNames();
     }
@@ -64,6 +68,10 @@ public class DataStorage extends ViewModel {
 
     public ContactDetails[] getAllContacts(long communityId) {
         return mDb.contactDetailsDao().getAllContactsByCommunity(communityId);
+    }
+
+    public ContactDetails[] searchContactsForPattern(String pattern) {
+        return mDb.contactDetailsDao().searchContactsForPattern(pattern);
     }
 
     public ContactDetails getContactById(long contactId) {

@@ -24,12 +24,20 @@ import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.CommunityDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-public class CreateCommunityFragment extends Fragment {
+public class EditCommunityFragment extends Fragment {
 
     private static final String TAG = "CreateCommunityFragment";
     private View mView;
     private DataStorage mDataStorage;
     private AppState mAppState;
+
+    private enum Mode {
+        Edit, Create
+    }
+
+    ;
+
+    private Mode mode = Mode.Create;
 
     @Override
     public View onCreateView(
@@ -41,17 +49,47 @@ public class CreateCommunityFragment extends Fragment {
         return mView;
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
         mAppState = new ViewModelProvider(requireActivity()).get(AppState.class);
+
+        if (mAppState.isCommunityIdAvailable()) {
+            mode = Mode.Edit;
+            AsyncTask<Void, Void, CommunityDetails> getDataTask = new AsyncTask<Void, Void, CommunityDetails>() {
+                @Override
+                protected CommunityDetails doInBackground(Void... voids) {
+                    CommunityDetails contact = mDataStorage.getCommunityById(mAppState.currentCommunityId());
+                    return contact;
+                }
+
+                @Override
+                protected void onPostExecute(CommunityDetails contactDetails) {
+                    ((EditText) view.findViewById(R.id.community_name)).setText(contactDetails.name);
+                    ((EditText) view.findViewById(R.id.community_description)).setText(contactDetails.description);
+                }
+            };
+            getDataTask.execute();
+        } else
+            mode = Mode.Create;
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_community_create, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        MenuItem item = menu.findItem(R.id.command_menu_confirm);
+        if (mode == Mode.Create) {
+            item.setTitle(R.string.command_menu_community_addconfirm);
+        } else {
+            item.setTitle(R.string.command_menu_community_update);
+        }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -89,8 +127,13 @@ public class CreateCommunityFragment extends Fragment {
                 protected void onPostExecute(Boolean ok) {
                     Log.d(TAG, "Create Community returned: " + ok);
                     if (ok) {
-                        NavHostFragment.findNavController(CreateCommunityFragment.this)
-                                .navigate(R.id.action_confirm_community_create, null);
+                        if (mode == Mode.Create) {
+                            NavHostFragment.findNavController(EditCommunityFragment.this)
+                                    .navigate(R.id.action_confirm_community_create, null);
+                        } else {
+                            NavHostFragment.findNavController(EditCommunityFragment.this)
+                                    .navigateUp();
+                        }
                     } else {
                         Snackbar.make(mView, R.string.error_cant_create_community, Snackbar.LENGTH_LONG).show();
                     }

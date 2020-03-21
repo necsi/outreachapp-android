@@ -11,7 +11,7 @@
     <string name="hint_community_name">My Community</string>
     <string name="label_community_description">Description</string>
     <string name="hint_community_description">A brief text describing the group</string>
-    <string name="command_menu_community_addconfirm">Add</string>
+    <string name="command_menu_community_addconfirm">Create</string>
     <string name="label_select_contacts">Select contacts</string>
     <string name="label_contact_name">Name:</string>
     <string name="label_contact_community">Community:</string>
@@ -28,4 +28,10 @@
     <string name="search_title">Search</string>
     <string name="action_import_contacts">Import</string>
     <string name="fragment_title_browse_communities">Communities</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
+    <string name="message_title_confirm_delete">Confirm deletion of the community</string>
+    <string name="message_confirm_delete">The community will be permanently deleted. This operation is irreversibile. You\'re really sure to delete it?</string>
+    <string name="message_error_cant_delete">Delete of Community failed.</string>
+    <string name="command_menu_community_update">Update</string>
 </resources>
