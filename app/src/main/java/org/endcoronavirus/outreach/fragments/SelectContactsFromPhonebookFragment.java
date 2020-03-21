@@ -30,7 +30,7 @@ import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class SelectContactsFromPhonebookFragment extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 79;
@@ -149,7 +149,7 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 // add all selected contacts to community
-                Set<ContactDetails> details = adapter.getSelectedContacts();
+                Collection<ContactDetails> details = adapter.getSelectedContacts();
                 Log.d(TAG, "Contacts added: " + details.size());
                 for (ContactDetails contactDetails : details) {
                     contactDetails.communityId = mAppState.currentCommunityId();

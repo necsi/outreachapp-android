@@ -20,8 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.ContactDetails;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -36,8 +37,7 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
 
     private static final String TAG = "SelectContactsListAdapt";
 
-    private Set<ContactDetails> selectedContacts = new HashSet<ContactDetails>();
-    private Set<Long> selectedContactsPosition = new HashSet<>();
+    private Map<Long, ContactDetails> selectedContactsID = new HashMap<>();
 
     private ContentResolver contentResolver;
     private Cursor cursor;
@@ -122,7 +122,7 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
         holder.setText(name);
         holder.setPosition(position);
 
-        holder.setCheckmarkIf(selectedContactsPosition.contains(Long.valueOf(position)));
+        holder.setCheckmarkIf(selectedContactsID.containsKey(Long.valueOf(cursor.getLong(CONTACT_ID_INDEX))));
     }
 
     @Override
@@ -131,8 +131,8 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
         return count;
     }
 
-    public Set<ContactDetails> getSelectedContacts() {
-        return selectedContacts;
+    public Collection<ContactDetails> getSelectedContacts() {
+        return selectedContactsID.values();
     }
 
     class ThisViewHolder extends RecyclerView.ViewHolder {
@@ -156,11 +156,11 @@ public class PhonebookContactListAdapter extends RecyclerView.Adapter<PhonebookC
                     contactDetails.contactKey = cursor.getString(CONTACT_KEY_INDEX);
                     contactDetails.name = cursor.getString(CONTACT_NAME);
                     if (isChecked) {
-                        selectedContacts.add(contactDetails);
-                        selectedContactsPosition.add(Long.valueOf(position));
+                        selectedContactsID.put(Long.valueOf(contactDetails.contactId), contactDetails);
+                        Log.d(TAG, "Added: " + contactDetails.contactId + " num: " + selectedContactsID.size());
                     } else {
-                        selectedContacts.remove(contactDetails);
-                        selectedContactsPosition.remove(Long.valueOf(position));
+                        selectedContactsID.remove(Long.valueOf(contactDetails.contactId));
+                        Log.d(TAG, "Removed: " + contactDetails.contactId + " num: " + selectedContactsID.size());
                     }
                 }
             });
