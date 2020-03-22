@@ -76,7 +76,8 @@
         android:label="@string/label_remove_contacts" >
         <action
             android:id="@+id/action_remove_confirm"
-            app:destination="@id/fragment_show_community" />
+            app:destination="@id/fragment_show_community"
+            app:popUpTo="@id/fragment_community_browse" />
     </fragment>
 
 </navigation>
