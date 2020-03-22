@@ -152,8 +152,26 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
                 Set<ContactDetails> details = adapter.getSelectedContacts();
                 Log.d(TAG, "Contacts added: " + details.size());
                 for (ContactDetails contactDetails : details) {
+                    boolean flag = true;
                     contactDetails.communityId = mAppState.currentCommunityId();
-                    mDataStorage.addContact(contactDetails);
+                    ContactDetails[] oldDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId() * -1);
+                    ContactDetails[] currentDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId());
+                    for (ContactDetails current : currentDetails) {
+                        if (current.contactId == contactDetails.contactId) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    for (ContactDetails old : oldDetails) {
+                        if (old.contactId == contactDetails.contactId) {
+                            old.communityId *= -1;
+                            mDataStorage.updateContact(old);
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if (flag)
+                        mDataStorage.addContact(contactDetails);
                 }
 
                 return true;

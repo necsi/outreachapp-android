@@ -72,7 +72,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_remove_contacts"
-        android:name="org.endcoronavirus.outreach.fragments.RemoveContactsFromCommunity"
+        android:name="org.endcoronavirus.outreach.fragments.RemoveContactsFromCommunityFragment"
         android:label="@string/label_remove_contacts" >
         <action
             android:id="@+id/action_remove_confirm"
