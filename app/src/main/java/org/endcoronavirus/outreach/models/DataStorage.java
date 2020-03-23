@@ -35,7 +35,9 @@ public class DataStorage extends ViewModel {
         Log.d(TAG, "Database Opened");
 
         mDb = Room.databaseBuilder(context,
-                DataStorageDatabase.class, "outreach.db").build();
+                DataStorageDatabase.class, "outreach.db")
+                .fallbackToDestructiveMigrationFrom(4)
+                .build();
     }
 
     public long addCommunity(CommunityDetails community) throws SQLiteConstraintException {
