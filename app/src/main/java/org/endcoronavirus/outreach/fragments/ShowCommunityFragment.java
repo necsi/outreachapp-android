@@ -128,9 +128,9 @@ public class ShowCommunityFragment extends Fragment {
                 return doActionDelete();
             case R.id.action_edit:
                 return doActionEdit();
-            case R.id.action_remove_contacts:
+            case R.id.action_select_contacts_in_community:
                 NavHostFragment.findNavController(ShowCommunityFragment.this)
-                        .navigate(R.id.action_remove_contacts, null);
+                        .navigate(R.id.action_select_contacts_in_community, null);
                 return true;
         }
         return super.onOptionsItemSelected(item);
