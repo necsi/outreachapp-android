@@ -1,6 +1,5 @@
 package org.endcoronavirus.outreach.fragments;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
