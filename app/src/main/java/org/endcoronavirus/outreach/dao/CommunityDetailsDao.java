@@ -3,6 +3,7 @@ package org.endcoronavirus.outreach.dao;
 import android.provider.BaseColumns;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -21,7 +22,9 @@ public interface CommunityDetailsDao {
     @Insert
     long addCommunity(CommunityDetails community);
 
-    @Update()
+    @Update
     void updateCommunity(CommunityDetails community);
 
+    @Delete
+    int deleteCommunity(CommunityDetails details);
 }

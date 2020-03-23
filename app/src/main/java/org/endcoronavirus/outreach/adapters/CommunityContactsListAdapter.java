@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach.adapters;
 
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,25 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
     private ContactDetails[] contacts;
     private OnItemClickedListener listener;
 
+    private DataStorage dataStorage;
+    private long communityId;
+    private String filter;
+
     public interface OnItemClickedListener {
         public void onItemClicked(int position);
     }
 
     public CommunityContactsListAdapter(DataStorage dataStorage, long communityId) {
-        contacts = dataStorage.getAllContacts(communityId);
+        this.dataStorage = dataStorage;
+        this.communityId = communityId;
+        refresh();
+    }
+
+    private void refresh() {
+        if (filter == null || filter.isEmpty())
+            contacts = dataStorage.getAllContacts(communityId);
+        else
+            contacts = dataStorage.searchContactsForPattern(filter);
     }
 
     public ContactDetails getContactAtPosition(int position) {
@@ -71,5 +85,13 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
         public void setText(String name) {
             textView.setText(name);
         }
+    }
+
+    public void setFilterString(String filter) {
+        this.filter = "%" + filter + "%";
+        refresh();
+
+        if (Looper.myLooper() == Looper.getMainLooper())
+            notifyDataSetChanged();
     }
 }

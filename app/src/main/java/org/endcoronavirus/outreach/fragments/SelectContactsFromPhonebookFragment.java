@@ -30,7 +30,7 @@ import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class SelectContactsFromPhonebookFragment extends Fragment {
     private static final int REQUEST_READ_CONTACTS = 79;
@@ -66,8 +66,11 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         setHasOptionsMenu(true);
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
+        // asks for both access to Contacts and Phone calls in single dialog
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getActivity(),
+                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(getActivity());
         } else {
             startReadContacts();
@@ -115,7 +118,8 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS)) {
             // show UI part if you want here to show some rationale !!!
         } else {
-            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS},
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS,
+                    android.Manifest.permission.CALL_PHONE},
                     REQUEST_READ_CONTACTS);
         }
     }
@@ -149,7 +153,7 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 // add all selected contacts to community
-                Set<ContactDetails> details = adapter.getSelectedContacts();
+                Collection<ContactDetails> details = adapter.getSelectedContacts();
                 Log.d(TAG, "Contacts added: " + details.size());
                 for (ContactDetails contactDetails : details) {
                     boolean flag = true;
