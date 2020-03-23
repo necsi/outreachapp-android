@@ -12,8 +12,12 @@
     <string name="label_community_description">Description</string>
     <string name="hint_community_description">A brief text describing the group</string>
     <string name="command_menu_community_addconfirm">Create</string>
+    <string name="add_community">Create New Community</string>
     <string name="label_select_contacts">Select contacts</string>
+    <string name="contact_picture">Contact Picture</string>
     <string name="label_contact_name">Name:</string>
+    <string name="enter_name">Enter Name of Contact</string>
+    <string name="enter_community_name">Enter Community Name</string>
     <string name="label_contact_community">Community:</string>
     <string name="label_contact_phone">Phone:</string>
     <string name="label_contact_freetext_notes">Notes</string>

@@ -66,8 +66,11 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         setHasOptionsMenu(true);
         mDataStorage = new ViewModelProvider(requireActivity()).get(DataStorage.class);
 
+        // asks for both access to Contacts and Phone calls in single dialog
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getActivity(),
+                        android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             requestPermission(getActivity());
         } else {
             startReadContacts();
@@ -115,7 +118,8 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS)) {
             // show UI part if you want here to show some rationale !!!
         } else {
-            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS},
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS,
+                    android.Manifest.permission.CALL_PHONE},
                     REQUEST_READ_CONTACTS);
         }
     }
