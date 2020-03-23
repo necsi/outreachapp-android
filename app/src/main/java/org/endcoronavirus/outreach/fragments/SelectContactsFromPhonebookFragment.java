@@ -118,7 +118,6 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
         if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_CONTACTS)) {
             // show UI part if you want here to show some rationale !!!
         } else {
-            // edited to include CALL_PHONE permission
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS,
                     android.Manifest.permission.CALL_PHONE},
                     REQUEST_READ_CONTACTS);
