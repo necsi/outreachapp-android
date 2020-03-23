@@ -42,6 +42,7 @@ import org.endcoronavirus.outreach.data.ContactDetailsParser;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+import org.endcoronavirus.outreach.models.LogEntry;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -218,6 +219,18 @@ public class ShowContactFragment extends Fragment {
     }
 
     private void makeCall(Uri Number) {
+        AsyncTask<Void, Void, Boolean> addLogTask = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                LogEntry entry = new LogEntry();
+                entry.contactId = contactDetails.id;
+                entry.description = getString(R.string.log_try_call);
+                mDataStorage.logEntries().add(entry);
+                return null;
+            }
+        };
+        addLogTask.execute();
+
         Intent i = new Intent(Intent.ACTION_CALL, Number);
         startActivity(i);
     }

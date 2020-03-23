@@ -43,4 +43,5 @@
     <string name="message_confirm_delete">The community will be permanently deleted. This operation is irreversibile. You\'re really sure to delete it?</string>
     <string name="message_error_cant_delete">Delete of Community failed.</string>
     <string name="command_menu_community_update">Update</string>
+    <string name="log_try_call">Tried voice call</string>
 </resources>

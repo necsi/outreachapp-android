@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.room.Room;
 
+import org.endcoronavirus.outreach.dao.LogEntryDao;
+
 public class DataStorage extends ViewModel {
     private static final String TAG = "DataStorage";
 
@@ -86,5 +88,9 @@ public class DataStorage extends ViewModel {
 
     public void updateContact(ContactDetails contactDetails) {
         mDb.contactDetailsDao().updateContact(contactDetails);
+    }
+
+    public LogEntryDao logEntries() {
+        return mDb.logEntriesDao();
     }
 }

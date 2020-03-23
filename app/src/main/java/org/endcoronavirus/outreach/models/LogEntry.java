@@ -39,10 +39,13 @@ public class LogEntry {
     @ColumnInfo(name = COLUMN_DESCRIPTION)
     public String description;
 
-    public enum State {
-        TODO, DONE
-    }
+    public static final long STATE_TODO = 1;
+    public static final long STATE_DONE = 2;
 
     @ColumnInfo(name = COLUMN_STATE)
-    public State state;
+    public long state;
+
+    public LogEntry() {
+        timestamp = new Date();
+    }
 }
