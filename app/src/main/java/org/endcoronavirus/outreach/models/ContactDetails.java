@@ -6,13 +6,29 @@ import android.provider.ContactsContract;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(indices = {
+        @Index(ContactDetails.COLUMN_NAME),
+        @Index(ContactDetails.COLUMN_COMMUNITY_ID),
+        @Index(value = {ContactDetails.COLUMN_CONTACT_ID, ContactDetails.COLUMN_COMMUNITY_ID}, unique = true)},
+        foreignKeys = {
+                @ForeignKey(entity = CommunityDetails.class,
+                        parentColumns = CommunityDetails.COLUMN_ID,
+                        childColumns = ContactDetails.COLUMN_COMMUNITY_ID,
+                        onDelete = CASCADE)
+        }
+)
 public class ContactDetails {
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String COLUMN_COMMUNITY_ID = "community";
+    public static final String COLUMN_CONTACT_ID = "contacts_id";
+    public static final String COLUMN_CONTACT_KEY = "contacts_key";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_NOTES = "notes";
 
@@ -23,10 +39,10 @@ public class ContactDetails {
     @ColumnInfo(name = COLUMN_COMMUNITY_ID)
     public long communityId;
 
-    @ColumnInfo(name = "contacts_id")
+    @ColumnInfo(name = COLUMN_CONTACT_ID)
     public long contactId;
 
-    @ColumnInfo(name = "contacts_key")
+    @ColumnInfo(name = COLUMN_CONTACT_KEY)
     public String contactKey;
 
     @ColumnInfo(name = COLUMN_NAME)
