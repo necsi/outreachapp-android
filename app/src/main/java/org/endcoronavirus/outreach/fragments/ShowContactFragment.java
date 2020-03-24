@@ -151,17 +151,16 @@ public class ShowContactFragment extends Fragment {
                 Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG).show();
                 return true;
             case R.id.action_delete_contact:
+                // Allow for user to delete contact straight from this page
                 AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
                     @Override
                     protected Boolean doInBackground(Void... voids) {
                         contactDetails.communityId *= -1;
-                        Log.d("DeleteContact", contactDetails.name + "," + contactDetails.communityId);
                         mDataStorage.updateContact(contactDetails);
                         return true;
                     }
                     @Override
                     protected void onPostExecute(Boolean aBoolean) {
-                        Log.d("DeleteContact", "Got here");
                         NavHostFragment.findNavController(ShowContactFragment.this).popBackStack();
                     }
                 };

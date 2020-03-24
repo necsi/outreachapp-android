@@ -57,11 +57,14 @@ public class SelectContactsFromCommunityFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        // Get optional trueID, a long value that corresponds to what contacts should be pre-selected
+        // if any (or all)
         long trueID = getArguments().getLong("trueID");
 
         AsyncTask<Void, Void, Boolean> loadTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
+                // trueID - passing forward the ID of the contact (or all contacts) that should be selected
                 adapter = new SelectContactsListAdapter(mDataStorage, mAppState.currentCommunityId(), trueID);
                 communityName = mDataStorage.getCommunityById(mAppState.currentCommunityId()).name;
                 return true;
@@ -81,6 +84,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_select_contacts_in_community, menu);
+        // Busy waiting in case this function is called before the adapter is created
         while (adapter == null);
         adapter.setMenuItems(menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -119,7 +123,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
 
             @Override
             protected void onPostExecute(Boolean aBoolean) {
-                // and move to the community screen
+                // and move back to the community page
                 NavHostFragment.findNavController(SelectContactsFromCommunityFragment.this).popBackStack();
             }
         };
@@ -128,6 +132,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
     }
 
     public boolean  selectAll() {
+        // Busy wait in case adapter is not created yet
         while (adapter == null);
         return adapter.selectAll();
     }

@@ -86,10 +86,12 @@ public class ShowCommunityFragment extends Fragment {
                             NavHostFragment.findNavController(ShowCommunityFragment.this)
                                     .navigate(R.id.action_show_contact, null);
                         }
+                        // Second method needed for long taps
                         @Override
                         public boolean onItemLongClicked(int position) {
                             long contactID = adapter.getContactAtPosition(position).contactId;
                             Bundle bundle = new Bundle();
+                            // Pass forward the ID of the contact to be selected
                             bundle.putLong("trueID", contactID);
                             NavHostFragment.findNavController(ShowCommunityFragment.this)
                                     .navigate(R.id.action_select_contacts_in_community, bundle);
@@ -139,6 +141,8 @@ public class ShowCommunityFragment extends Fragment {
                 return doActionDelete();
             case R.id.action_edit:
                 return doActionEdit();
+            // Select all is the same as select, except sending forward a long special value
+            // corresponding to select all (via a bundle)
             case R.id.action_select_all_contacts_in_community:
                 bundle.putLong("trueID", SelectContactsListAdapter.SELECT_ALL);
             case R.id.action_select_contacts_in_community:

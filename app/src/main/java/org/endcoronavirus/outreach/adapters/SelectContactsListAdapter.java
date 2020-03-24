@@ -34,6 +34,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     public SelectContactsListAdapter(DataStorage dataStorage, long communityId, long trueID) {
         contacts = dataStorage.getAllContacts(communityId);
         viewHolders = new ViewHolder[contacts.length];
+        // Determine starting state of all contacts, some (or all) might need to be selected
         defaultState = new boolean[contacts.length];
         for (int i = 0; i < defaultState.length; i++) {
             if (trueID == SELECT_ALL || contacts[i].contactId == trueID)
@@ -50,6 +51,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
         selectAllMenuItem = menu.findItem(R.id.action_select_all_contacts_in_community);
     }
 
+    // Update for every time a contact checkbox is changed
     private void menuUpdate() {
         if (selectedSize < contacts.length)
             selectAllMenuItem.setVisible(true);
@@ -109,11 +111,13 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
                     if (isChecked) {
                         selectedContacts.add(contacts[position]);
                         selectedContactsPosition.add(position);
+                        // HashSet size does not decrement, so need to keep track of actual size
                         selectedSize++;
                         menuUpdate();
                     } else {
                         selectedContacts.remove(contactDetails);
                         selectedContactsPosition.remove(Long.valueOf(position));
+                        // HashSet size does not decrement, so need to keep track of actual size
                         selectedSize--;
                         menuUpdate();
                     }

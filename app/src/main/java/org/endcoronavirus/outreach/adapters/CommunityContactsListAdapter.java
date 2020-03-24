@@ -23,6 +23,7 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
 
     public interface OnItemClickedListener {
         public void onItemClicked(int position);
+        // Second method needed for long taps
         public boolean onItemLongClicked(int position);
     }
 
@@ -80,6 +81,7 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
                         listener.onItemClicked(position);
                 }
             });
+
             itemView.setOnLongClickListener((v) -> {
                 int position = getAdapterPosition();
                 if (listener != null)

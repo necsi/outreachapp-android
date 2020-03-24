@@ -160,12 +160,14 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
                     contactDetails.communityId = mAppState.currentCommunityId();
                     ContactDetails[] oldDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId() * -1);
                     ContactDetails[] currentDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId());
+                    // Check if a contact is already in the community, don't add if so
                     for (ContactDetails current : currentDetails) {
                         if (current.contactId == contactDetails.contactId) {
                             flag = false;
                             break;
                         }
                     }
+                    // Check if a contact was at one point in the community, just grab that old record
                     for (ContactDetails old : oldDetails) {
                         if (old.contactId == contactDetails.contactId) {
                             old.communityId *= -1;
