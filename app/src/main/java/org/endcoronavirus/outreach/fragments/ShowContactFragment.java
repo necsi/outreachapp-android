@@ -145,11 +145,30 @@ public class ShowContactFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.command_menu_save) {
-            saveContact();
-            Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG).show();
+        switch  (id) {
+            case R.id.command_menu_save:
+                saveContact();
+                Snackbar.make(view, R.string.message_contact_save_done, Snackbar.LENGTH_LONG).show();
+                return true;
+            case R.id.action_delete_contact:
+                AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+                    @Override
+                    protected Boolean doInBackground(Void... voids) {
+                        contactDetails.communityId *= -1;
+                        Log.d("DeleteContact", contactDetails.name + "," + contactDetails.communityId);
+                        mDataStorage.updateContact(contactDetails);
+                        return true;
+                    }
+                    @Override
+                    protected void onPostExecute(Boolean aBoolean) {
+                        Log.d("DeleteContact", "Got here");
+                        NavHostFragment.findNavController(ShowContactFragment.this).popBackStack();
+                    }
+                };
+                task.execute();
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupView() {
