@@ -17,13 +17,13 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
 
     private ContactDetails[] contacts;
     private OnItemClickedListener listener;
-
     private DataStorage dataStorage;
     private long communityId;
     private String filter;
 
     public interface OnItemClickedListener {
         public void onItemClicked(int position);
+        public boolean onItemLongClicked(int position);
     }
 
     public CommunityContactsListAdapter(DataStorage dataStorage, long communityId) {
@@ -79,6 +79,12 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
                     if (listener != null)
                         listener.onItemClicked(position);
                 }
+            });
+            itemView.setOnLongClickListener((v) -> {
+                int position = getAdapterPosition();
+                if (listener != null)
+                    return listener.onItemLongClicked(position);
+                return false;
             });
         }
 

@@ -57,11 +57,12 @@ public class SelectContactsFromCommunityFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        long trueID = getArguments().getLong("trueID");
 
         AsyncTask<Void, Void, Boolean> loadTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
-                adapter = new SelectContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
+                adapter = new SelectContactsListAdapter(mDataStorage, mAppState.currentCommunityId(), trueID);
                 communityName = mDataStorage.getCommunityById(mAppState.currentCommunityId()).name;
                 return true;
             }
@@ -126,5 +127,8 @@ public class SelectContactsFromCommunityFragment extends Fragment {
         return true;
     }
 
-    public boolean  selectAll() { return adapter.selectAll(); }
+    public boolean  selectAll() {
+        while (adapter == null);
+        return adapter.selectAll();
+    }
 }

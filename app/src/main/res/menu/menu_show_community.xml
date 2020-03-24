@@ -20,4 +20,7 @@
     <item
         android:id="@+id/action_select_contacts_in_community"
         android:title="@string/action_select_contacts_in_community" />
+    <item
+        android:id="@+id/action_select_all_contacts_in_community"
+        android:title="@string/action_select_all_contacts_in_community" />
 </menu>
