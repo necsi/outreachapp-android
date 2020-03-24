@@ -58,8 +58,8 @@
         <action
             android:id="@+id/action_community_edit"
             app:destination="@id/fragment_community_create" />
-		<action
-		    android:id="@+id/action_select_contacts_in_community"
+        <action
+            android:id="@+id/action_select_contacts_in_community"
             app:destination="@id/fragment_select_contacts_in_community" />
     </fragment>
     <fragment
@@ -72,10 +72,16 @@
         <argument
             android:name="contact_id"
             app:argType="long" />
+        <action
+            android:id="@+id/action_browse_log_entries"
+            app:destination="@id/fragment_browse_log_entries" />
     </fragment>
     <fragment
         android:id="@+id/fragment_select_contacts_in_community"
         android:name="org.endcoronavirus.outreach.fragments.SelectContactsFromCommunityFragment"
         android:label="@string/label_remove_contacts" />
-
+    <fragment
+        android:id="@+id/fragment_browse_log_entries"
+        android:name="org.endcoronavirus.outreach.fragments.BrowseLogEntriesFragment"
+        android:label="fragment_browse_log_entries" />
 </navigation>

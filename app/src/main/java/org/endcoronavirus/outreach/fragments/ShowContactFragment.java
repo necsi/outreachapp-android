@@ -182,6 +182,15 @@ public class ShowContactFragment extends Fragment {
                 tryCall(numberUri);
             }
         });
+
+        b = view.findViewById(R.id.action_history);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(ShowContactFragment.this)
+                        .navigate(R.id.action_browse_log_entries);
+            }
+        });
     }
 
     private void tryCall(Uri number) {
