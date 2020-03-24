@@ -59,8 +59,8 @@
             android:id="@+id/action_community_edit"
             app:destination="@id/fragment_community_create" />
 		<action
-		    android:id="@+id/action_remove_contacts"
-            app:destination="@id/fragment_remove_contacts" />
+		    android:id="@+id/action_select_contacts_in_community"
+            app:destination="@id/fragment_select_contacts_in_community" />
     </fragment>
     <fragment
         android:id="@+id/fragment_show_contact"
@@ -74,13 +74,8 @@
             app:argType="long" />
     </fragment>
     <fragment
-        android:id="@+id/fragment_remove_contacts"
-        android:name="org.endcoronavirus.outreach.fragments.RemoveContactsFromCommunityFragment"
-        android:label="@string/label_remove_contacts" >
-        <action
-            android:id="@+id/action_remove_confirm"
-            app:destination="@id/fragment_show_community"
-            app:popUpTo="@id/fragment_community_browse" />
-    </fragment>
+        android:id="@+id/fragment_select_contacts_in_community"
+        android:name="org.endcoronavirus.outreach.fragments.SelectContactsFromCommunityFragment"
+        android:label="@string/label_remove_contacts" />
 
 </navigation>

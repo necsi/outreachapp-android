@@ -1,6 +1,8 @@
 package org.endcoronavirus.outreach.adapters;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -17,29 +19,59 @@ import org.endcoronavirus.outreach.models.DataStorage;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RemoveContactsListAdapter extends RecyclerView.Adapter<RemoveContactsListAdapter.ViewHolder> {
+public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContactsListAdapter.ViewHolder> {
 
     private ContactDetails[] contacts;
-    private OnItemClickedListener listener;
     private Set<ContactDetails> selectedContacts = new HashSet<ContactDetails>();
     private Set<Integer> selectedContactsPosition = new HashSet<>();
+    private int selectedSize = 0;
+    static final public long SELECT_ALL = Long.MAX_VALUE;
+    boolean[] defaultState;
+    private MenuItem deleteSelectionMenuItem;
+    private MenuItem selectAllMenuItem;
+    private ViewHolder[] viewHolders;
 
-    public interface OnItemClickedListener {
-        public void onItemClicked(int position);
-    }
-
-    public RemoveContactsListAdapter(DataStorage dataStorage, long communityId) {
+    public SelectContactsListAdapter(DataStorage dataStorage, long communityId, long trueID) {
         contacts = dataStorage.getAllContacts(communityId);
+        viewHolders = new ViewHolder[contacts.length];
+        // Determine starting state of all contacts, some (or all) might need to be selected
+        defaultState = new boolean[contacts.length];
+        for (int i = 0; i < defaultState.length; i++) {
+            if (trueID == SELECT_ALL || contacts[i].contactId == trueID)
+                defaultState[i] = true;
+            else
+                defaultState[i] = false;
+        }
     }
 
     public ContactDetails getContactAtPosition(int position) { return contacts[position]; }
 
-    public void setOnItemClickedListener(OnItemClickedListener listener) {
-        this.listener = listener;
+    public void setMenuItems(Menu menu) {
+        deleteSelectionMenuItem = menu.findItem(R.id.action_delete_selection);
+        selectAllMenuItem = menu.findItem(R.id.action_select_all_contacts_in_community);
+    }
+
+    // Update for every time a contact checkbox is changed
+    private void menuUpdate() {
+        if (selectedSize < contacts.length)
+            selectAllMenuItem.setVisible(true);
+        else
+            selectAllMenuItem.setVisible(false);
+        if (selectedSize > 0)
+            deleteSelectionMenuItem.setVisible(true);
+        else
+            deleteSelectionMenuItem.setVisible(false);
     }
 
     public Set<ContactDetails> getSelectedContacts() {
         return selectedContacts;
+    }
+
+    public boolean selectAll() {
+        for (ViewHolder viewholder : viewHolders)
+            if (!viewholder.checkBox.isChecked())
+                viewholder.checkBox.setChecked(true);
+        return true;
     }
 
     @NonNull
@@ -54,6 +86,8 @@ public class RemoveContactsListAdapter extends RecyclerView.Adapter<RemoveContac
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setText(contacts[position].name);
+        viewHolders[position] = holder;
+        holder.checkBox.setChecked(defaultState[position]);
     }
 
     @Override
@@ -65,7 +99,7 @@ public class RemoveContactsListAdapter extends RecyclerView.Adapter<RemoveContac
         private final TextView textView;
         private CheckBox checkBox;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull final View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.textview);
             checkBox = itemView.findViewById(R.id.selected_checkbox);
@@ -77,9 +111,15 @@ public class RemoveContactsListAdapter extends RecyclerView.Adapter<RemoveContac
                     if (isChecked) {
                         selectedContacts.add(contacts[position]);
                         selectedContactsPosition.add(position);
+                        // HashSet size does not decrement, so need to keep track of actual size
+                        selectedSize++;
+                        menuUpdate();
                     } else {
                         selectedContacts.remove(contactDetails);
                         selectedContactsPosition.remove(Long.valueOf(position));
+                        // HashSet size does not decrement, so need to keep track of actual size
+                        selectedSize--;
+                        menuUpdate();
                     }
                 }
             });
@@ -89,8 +129,6 @@ public class RemoveContactsListAdapter extends RecyclerView.Adapter<RemoveContac
             textView.setText(name);
         }
 
-        public void setCheckmarkIf(boolean checked) {
-            checkBox.setChecked(checked);
-        }
+        public void setCheckmarkIf(boolean checked) { checkBox.setChecked(checked); }
     }
 }

@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.adapters.CommunityContactsListAdapter;
+import org.endcoronavirus.outreach.adapters.SelectContactsListAdapter;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
@@ -84,6 +86,17 @@ public class ShowCommunityFragment extends Fragment {
                             NavHostFragment.findNavController(ShowCommunityFragment.this)
                                     .navigate(R.id.action_show_contact, null);
                         }
+                        // Second method needed for long taps
+                        @Override
+                        public boolean onItemLongClicked(int position) {
+                            long contactID = adapter.getContactAtPosition(position).contactId;
+                            Bundle bundle = new Bundle();
+                            // Pass forward the ID of the contact to be selected
+                            bundle.putLong("trueID", contactID);
+                            NavHostFragment.findNavController(ShowCommunityFragment.this)
+                                    .navigate(R.id.action_select_contacts_in_community, bundle);
+                            return true;
+                        }
                     });
 
                     ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(communityName);
@@ -117,7 +130,7 @@ public class ShowCommunityFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-
+        Bundle bundle = new Bundle();
         switch (id) {
             case R.id.action_import_contacts:
                 NavHostFragment.findNavController(ShowCommunityFragment.this)
@@ -128,9 +141,13 @@ public class ShowCommunityFragment extends Fragment {
                 return doActionDelete();
             case R.id.action_edit:
                 return doActionEdit();
-            case R.id.action_remove_contacts:
+            // Select all is the same as select, except sending forward a long special value
+            // corresponding to select all (via a bundle)
+            case R.id.action_select_all_contacts_in_community:
+                bundle.putLong("trueID", SelectContactsListAdapter.SELECT_ALL);
+            case R.id.action_select_contacts_in_community:
                 NavHostFragment.findNavController(ShowCommunityFragment.this)
-                        .navigate(R.id.action_remove_contacts, null);
+                        .navigate(R.id.action_select_contacts_in_community, bundle);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -17,7 +17,10 @@
     <item
         android:id="@+id/action_import_contacts"
         android:title="@string/action_import_contacts" />
-	<item
-        android:id="@+id/action_remove_contacts"
-        android:title="@string/action_remove_contacts" />
+    <item
+        android:id="@+id/action_select_contacts_in_community"
+        android:title="@string/action_select_contacts_in_community" />
+    <item
+        android:id="@+id/action_select_all_contacts_in_community"
+        android:title="@string/action_select_all_contacts_in_community" />
 </menu>
