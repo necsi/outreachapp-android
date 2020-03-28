@@ -7,6 +7,8 @@ import androidx.room.Update;
 
 import org.endcoronavirus.outreach.models.ContactDetails;
 
+import java.util.Date;
+
 @Dao
 public interface ContactDetailsDao {
 
@@ -37,4 +39,9 @@ public interface ContactDetailsDao {
     @Update()
     void updateContact(ContactDetails community);
 
+    @Query("UPDATE " + ContactDetails.TABLE_NAME
+            + " SET " + ContactDetails.COLUMN_LAST_CONTACTED + " = :date "
+            + " WHERE " + ContactDetails.COLUMN_ID + " = :id"
+    )
+    int updateLastContacted(long id, Date date);
 }

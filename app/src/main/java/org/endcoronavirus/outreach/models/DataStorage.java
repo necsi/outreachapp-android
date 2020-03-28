@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModel;
 import androidx.room.Room;
 
+import org.endcoronavirus.outreach.dao.ContactDetailsDao;
 import org.endcoronavirus.outreach.dao.LogEntryDao;
 
 public class DataStorage extends ViewModel {
@@ -39,6 +40,7 @@ public class DataStorage extends ViewModel {
         mDb = Room.databaseBuilder(context,
                 DataStorageDatabase.class, "outreach.db")
                 .fallbackToDestructiveMigrationFrom(4)
+                .addMigrations(DataStorageDatabase.MIGRATION_5_6)
                 .build();
     }
 
@@ -88,6 +90,10 @@ public class DataStorage extends ViewModel {
 
     public void updateContact(ContactDetails contactDetails) {
         mDb.contactDetailsDao().updateContact(contactDetails);
+    }
+
+    public ContactDetailsDao contacts() {
+        return mDb.contactDetailsDao();
     }
 
     public LogEntryDao logEntries() {

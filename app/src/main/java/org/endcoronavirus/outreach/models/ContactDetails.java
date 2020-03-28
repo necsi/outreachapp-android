@@ -11,6 +11,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Date;
+
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(indices = {
@@ -25,12 +27,15 @@ import static androidx.room.ForeignKey.CASCADE;
         }
 )
 public class ContactDetails {
+    public static final String TABLE_NAME = "ContactDetails";
+
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String COLUMN_COMMUNITY_ID = "community";
     public static final String COLUMN_CONTACT_ID = "contacts_id";
     public static final String COLUMN_CONTACT_KEY = "contacts_key";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_NOTES = "notes";
+    public static final String COLUMN_LAST_CONTACTED = "last_contacted";
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = COLUMN_ID)
@@ -50,6 +55,9 @@ public class ContactDetails {
 
     @ColumnInfo(name = COLUMN_NOTES)
     public String notes;
+
+    @ColumnInfo(name = COLUMN_LAST_CONTACTED)
+    public Date lastContacted;
 
     @Ignore
     public Uri getContactUri() {
