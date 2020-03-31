@@ -119,7 +119,7 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
             // show UI part if you want here to show some rationale !!!
         } else {
             requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS,
-                    android.Manifest.permission.CALL_PHONE},
+                            android.Manifest.permission.CALL_PHONE},
                     REQUEST_READ_CONTACTS);
         }
     }
@@ -158,8 +158,8 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
                 for (ContactDetails contactDetails : details) {
                     boolean flag = true;
                     contactDetails.communityId = mAppState.currentCommunityId();
-                    ContactDetails[] oldDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId() * -1);
-                    ContactDetails[] currentDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId());
+                    ContactDetails[] oldDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId() * -1, DataStorage.Sorting.Unsorted);
+                    ContactDetails[] currentDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId(), DataStorage.Sorting.Unsorted);
                     // Check if a contact is already in the community, don't add if so
                     for (ContactDetails current : currentDetails) {
                         if (current.contactId == contactDetails.contactId) {

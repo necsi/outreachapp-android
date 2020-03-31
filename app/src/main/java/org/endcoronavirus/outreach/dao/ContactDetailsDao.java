@@ -24,6 +24,14 @@ public interface ContactDetailsDao {
     @Query("SELECT * FROM ContactDetails WHERE " + ContactDetails.COLUMN_COMMUNITY_ID + " = :cid")
     ContactDetails[] getAllContactsByCommunity(long cid);
 
+    @Query("SELECT * FROM ContactDetails WHERE " + ContactDetails.COLUMN_COMMUNITY_ID + " = :cid " +
+            "ORDER BY " + ContactDetails.COLUMN_NAME + " ASC")
+    ContactDetails[] getAllContactsByCommunitySortedByName(long cid);
+
+    @Query("SELECT * FROM ContactDetails WHERE " + ContactDetails.COLUMN_COMMUNITY_ID + " = :cid " +
+            "ORDER BY " + ContactDetails.COLUMN_LAST_CONTACTED + " ASC")
+    ContactDetails[] getAllContactsByCommunitySortedByLastContacted(long cid);
+
     @Query("SELECT * FROM ContactDetails WHERE "
             + ContactDetails.COLUMN_NAME + " LIKE :pat OR "
             + ContactDetails.COLUMN_NOTES + " LIKE :pat")

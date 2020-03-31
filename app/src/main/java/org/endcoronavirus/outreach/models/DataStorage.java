@@ -72,8 +72,21 @@ public class DataStorage extends ViewModel {
         return mDb.contactDetailsDao().addContact(contact);
     }
 
-    public ContactDetails[] getAllContacts(long communityId) {
-        return mDb.contactDetailsDao().getAllContactsByCommunity(communityId);
+    public enum Sorting {
+        Unsorted, Name, LastContacted
+    }
+
+    public ContactDetails[] getAllContacts(long communityId, Sorting sorting) {
+        switch (sorting) {
+            case Unsorted:
+                return mDb.contactDetailsDao().getAllContactsByCommunity(communityId);
+            case Name:
+                return mDb.contactDetailsDao().getAllContactsByCommunitySortedByName(communityId);
+            case LastContacted:
+                return mDb.contactDetailsDao().getAllContactsByCommunitySortedByLastContacted(communityId);
+            default:
+                throw new RuntimeException("Sorting field not implemented");
+        }
     }
 
     public ContactDetails[] searchContactsForPattern(String pattern) {

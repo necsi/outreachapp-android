@@ -32,7 +32,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     private ViewHolder[] viewHolders;
 
     public SelectContactsListAdapter(DataStorage dataStorage, long communityId, long trueID) {
-        contacts = dataStorage.getAllContacts(communityId);
+        contacts = dataStorage.getAllContacts(communityId, DataStorage.Sorting.Name);
         viewHolders = new ViewHolder[contacts.length];
         // Determine starting state of all contacts, some (or all) might need to be selected
         defaultState = new boolean[contacts.length];
@@ -44,7 +44,9 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
         }
     }
 
-    public ContactDetails getContactAtPosition(int position) { return contacts[position]; }
+    public ContactDetails getContactAtPosition(int position) {
+        return contacts[position];
+    }
 
     public void setMenuItems(Menu menu) {
         deleteSelectionMenuItem = menu.findItem(R.id.action_delete_selection);
@@ -129,6 +131,8 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
             textView.setText(name);
         }
 
-        public void setCheckmarkIf(boolean checked) { checkBox.setChecked(checked); }
+        public void setCheckmarkIf(boolean checked) {
+            checkBox.setChecked(checked);
+        }
     }
 }
