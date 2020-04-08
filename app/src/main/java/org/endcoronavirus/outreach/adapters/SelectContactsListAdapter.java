@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+import org.endcoronavirus.outreach.models.DataStorageObject;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     private ViewHolder[] viewHolders;
 
     public SelectContactsListAdapter(DataStorage dataStorage, long communityId, long trueID) {
-        contacts = dataStorage.getAllContacts(communityId, DataStorage.Sorting.Name);
+        contacts = dataStorage.ds().getAllContacts(communityId, DataStorageObject.Sorting.Name);
         viewHolders = new ViewHolder[contacts.length];
         // Determine starting state of all contacts, some (or all) might need to be selected
         defaultState = new boolean[contacts.length];

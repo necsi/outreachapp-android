@@ -66,7 +66,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
             protected Boolean doInBackground(Void... voids) {
                 // trueID - passing forward the ID of the contact (or all contacts) that should be selected
                 adapter = new SelectContactsListAdapter(mDataStorage, mAppState.currentCommunityId(), trueID);
-                communityName = mDataStorage.getCommunityById(mAppState.currentCommunityId()).name;
+                communityName = mDataStorage.ds().getCommunityById(mAppState.currentCommunityId()).name;
                 return true;
             }
 
@@ -85,7 +85,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_select_contacts_in_community, menu);
         // Busy waiting in case this function is called before the adapter is created
-        while (adapter == null);
+        while (adapter == null) ;
         adapter.setMenuItems(menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -116,7 +116,7 @@ public class SelectContactsFromCommunityFragment extends Fragment {
                 for (ContactDetails contactDetails : details) {
                     contactDetails.communityId = mAppState.currentCommunityId();
                     contactDetails.communityId *= -1;
-                    mDataStorage.updateContact(contactDetails);
+                    mDataStorage.ds().updateContact(contactDetails);
                 }
                 return true;
             }
@@ -131,9 +131,9 @@ public class SelectContactsFromCommunityFragment extends Fragment {
         return true;
     }
 
-    public boolean  selectAll() {
+    public boolean selectAll() {
         // Busy wait in case adapter is not created yet
-        while (adapter == null);
+        while (adapter == null) ;
         return adapter.selectAll();
     }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+import org.endcoronavirus.outreach.models.DataStorageObject;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
     private DataStorage dataStorage;
     private long communityId;
     private String filter;
-    private DataStorage.Sorting mSorting = DataStorage.Sorting.LastContacted;
+    private DataStorageObject.Sorting mSorting = DataStorageObject.Sorting.LastContacted;
     private final DateFormat dateFormatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
 
     public interface OnItemClickedListener {
@@ -41,9 +42,9 @@ public class CommunityContactsListAdapter extends RecyclerView.Adapter<Community
 
     private void refresh() {
         if (filter == null || filter.isEmpty())
-            contacts = dataStorage.getAllContacts(communityId, mSorting);
+            contacts = dataStorage.ds().getAllContacts(communityId, mSorting);
         else
-            contacts = dataStorage.searchContactsForPattern(filter);
+            contacts = dataStorage.ds().searchContactsForPattern(filter);
     }
 
     public ContactDetails getContactAtPosition(int position) {

@@ -1,6 +1,5 @@
 package org.endcoronavirus.outreach.fragments;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,7 +66,7 @@ public class ShowCommunityFragment extends Fragment {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 adapter = new CommunityContactsListAdapter(mDataStorage, mAppState.currentCommunityId());
-                communityName = mDataStorage.getCommunityById(mAppState.currentCommunityId()).name;
+                communityName = mDataStorage.ds().getCommunityById(mAppState.currentCommunityId()).name;
                 return true;
             }
 
@@ -86,6 +85,7 @@ public class ShowCommunityFragment extends Fragment {
                             NavHostFragment.findNavController(ShowCommunityFragment.this)
                                     .navigate(R.id.action_show_contact, null);
                         }
+
                         // Second method needed for long taps
                         @Override
                         public boolean onItemLongClicked(int position) {
@@ -163,7 +163,7 @@ public class ShowCommunityFragment extends Fragment {
                         AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
                             @Override
                             protected Boolean doInBackground(Void... voids) {
-                                int numdeleted = mDataStorage.deleteCommunity(mAppState.currentCommunityId());
+                                int numdeleted = mDataStorage.ds().deleteCommunity(mAppState.currentCommunityId());
                                 return numdeleted == 1;
                             }
 

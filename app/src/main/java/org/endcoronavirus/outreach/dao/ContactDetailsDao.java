@@ -32,6 +32,10 @@ public interface ContactDetailsDao {
             "ORDER BY " + ContactDetails.COLUMN_LAST_CONTACTED + " ASC")
     ContactDetails[] getAllContactsByCommunitySortedByLastContacted(long cid);
 
+    @Query("SELECT * FROM ContactDetails WHERE " + ContactDetails.COLUMN_LAST_CONTACTED + " >= :when " +
+            "ORDER BY " + ContactDetails.COLUMN_LAST_CONTACTED + " ASC")
+    ContactDetails[] getContactsOlderThan(long when);
+
     @Query("SELECT * FROM ContactDetails WHERE "
             + ContactDetails.COLUMN_NAME + " LIKE :pat OR "
             + ContactDetails.COLUMN_NOTES + " LIKE :pat")

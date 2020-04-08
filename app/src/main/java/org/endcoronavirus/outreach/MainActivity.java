@@ -1,5 +1,6 @@
 package org.endcoronavirus.outreach;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -16,7 +17,6 @@ import org.endcoronavirus.outreach.service.BackendServiceListener;
 public class MainActivity extends AppCompatActivity implements BackendServiceListener {
     private static final String TAG = "MainActivity";
 
-    private BackendService.BackendServiceConnection mServiceConnection;
     private BackendServiceInterface mService;
 
     private DataStorage mDataStorage;
@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        startService(new Intent(this, BackendService.class));
     }
 
     @Override
@@ -48,15 +50,6 @@ public class MainActivity extends AppCompatActivity implements BackendServiceLis
         // NOTE service was removed from here
         //mServiceConnection = BackendService.bindService(this, this);
         super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mServiceConnection != null) {
-            unbindService(mServiceConnection);
-        }
     }
 
     @Override

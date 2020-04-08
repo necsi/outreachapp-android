@@ -60,7 +60,7 @@ public class EditCommunityFragment extends Fragment {
             AsyncTask<Void, Void, CommunityDetails> getDataTask = new AsyncTask<Void, Void, CommunityDetails>() {
                 @Override
                 protected CommunityDetails doInBackground(Void... voids) {
-                    CommunityDetails contact = mDataStorage.getCommunityById(mAppState.currentCommunityId());
+                    CommunityDetails contact = mDataStorage.ds().getCommunityById(mAppState.currentCommunityId());
                     return contact;
                 }
 
@@ -109,12 +109,12 @@ public class EditCommunityFragment extends Fragment {
 
                     try {
                         if (!mAppState.isCommunityIdAvailable()) {
-                            long commid = mDataStorage.addCommunity(community);
+                            long commid = mDataStorage.ds().addCommunity(community);
                             mAppState.selectCommunity(commid);
                             community.id = commid;
                             Log.d(TAG, "Community Created with ID: " + commid);
                         } else {
-                            mDataStorage.updateCommunity(community);
+                            mDataStorage.ds().updateCommunity(community);
                         }
                     } catch (SQLiteConstraintException x) {
                         Log.e(TAG, "Insert failed: " + x.toString());

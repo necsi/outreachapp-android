@@ -29,6 +29,7 @@ import org.endcoronavirus.outreach.adapters.PhonebookContactListAdapter;
 import org.endcoronavirus.outreach.models.AppState;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+import org.endcoronavirus.outreach.models.DataStorageObject;
 
 import java.util.Collection;
 
@@ -158,8 +159,8 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
                 for (ContactDetails contactDetails : details) {
                     boolean flag = true;
                     contactDetails.communityId = mAppState.currentCommunityId();
-                    ContactDetails[] oldDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId() * -1, DataStorage.Sorting.Unsorted);
-                    ContactDetails[] currentDetails = mDataStorage.getAllContacts(mAppState.currentCommunityId(), DataStorage.Sorting.Unsorted);
+                    ContactDetails[] oldDetails = mDataStorage.ds().getAllContacts(mAppState.currentCommunityId() * -1, DataStorageObject.Sorting.Unsorted);
+                    ContactDetails[] currentDetails = mDataStorage.ds().getAllContacts(mAppState.currentCommunityId(), DataStorageObject.Sorting.Unsorted);
                     // Check if a contact is already in the community, don't add if so
                     for (ContactDetails current : currentDetails) {
                         if (current.contactId == contactDetails.contactId) {
@@ -171,13 +172,13 @@ public class SelectContactsFromPhonebookFragment extends Fragment {
                     for (ContactDetails old : oldDetails) {
                         if (old.contactId == contactDetails.contactId) {
                             old.communityId *= -1;
-                            mDataStorage.updateContact(old);
+                            mDataStorage.ds().updateContact(old);
                             flag = false;
                             break;
                         }
                     }
                     if (flag)
-                        mDataStorage.addContact(contactDetails);
+                        mDataStorage.ds().addContact(contactDetails);
                 }
 
                 return true;
