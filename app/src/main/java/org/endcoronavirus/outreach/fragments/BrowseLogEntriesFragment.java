@@ -55,7 +55,7 @@ public class BrowseLogEntriesFragment extends Fragment {
         AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
-                List<LogEntry> entries = mDataStorage.logEntries().getLogsForContact(mAppState.currentContactId());
+                List<LogEntry> entries = mDataStorage.ds().logEntries().getLogsForContact(mAppState.currentContactId());
                 Log.d(TAG, "Entries for " + mAppState.currentContactId() + ": " + entries.size());
                 adapter.setLogEntries(entries);
                 return true;

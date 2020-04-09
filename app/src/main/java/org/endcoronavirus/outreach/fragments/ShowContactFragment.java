@@ -115,12 +115,12 @@ public class ShowContactFragment extends Fragment {
             protected Boolean doInBackground(Void... voids) {
                 if (!load())
                     return false;
-                contactDetails = mDataStorage.getContactById(mAppState.currentContactId());
+                contactDetails = mDataStorage.ds().getContactById(mAppState.currentContactId());
 
                 if (contactDetails == null) {
                     return false;
                 }
-                communityName = mDataStorage.getCommunityById(contactDetails.communityId).name;
+                communityName = mDataStorage.ds().getCommunityById(contactDetails.communityId).name;
                 if (communityName == null) {
                     return false;
                 }
@@ -162,7 +162,7 @@ public class ShowContactFragment extends Fragment {
                     @Override
                     protected Boolean doInBackground(Void... voids) {
                         contactDetails.communityId *= -1;
-                        mDataStorage.updateContact(contactDetails);
+                        mDataStorage.ds().updateContact(contactDetails);
                         return true;
                     }
 
@@ -240,10 +240,10 @@ public class ShowContactFragment extends Fragment {
                 LogEntry entry = new LogEntry();
                 entry.contactId = contactDetails.id;
                 entry.description = getString(R.string.log_try_call);
-                mDataStorage.logEntries().add(entry);
+                mDataStorage.ds().logEntries().add(entry);
 
                 contactDetails.lastContacted = new Date();
-                int n = mDataStorage.contacts().updateLastContacted(contactDetails.id, contactDetails.lastContacted);
+                int n = mDataStorage.ds().contacts().updateLastContacted(contactDetails.id, contactDetails.lastContacted);
                 Log.d(TAG, "Updated " + n + " to " + contactDetails.lastContacted);
                 return null;
             }
@@ -307,7 +307,7 @@ public class ShowContactFragment extends Fragment {
         AsyncTask<Void, Void, Boolean> saveTask = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
-                mDataStorage.updateContact(contactDetails);
+                mDataStorage.ds().updateContact(contactDetails);
                 return true;
             }
         };

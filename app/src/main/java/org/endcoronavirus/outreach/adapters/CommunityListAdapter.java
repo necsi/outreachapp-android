@@ -25,7 +25,7 @@ public class CommunityListAdapter extends RecyclerView.Adapter<CommunityListAdap
 
     public void loadData(DataStorage dataStorage) {
         Log.d(TAG, "Loading data");
-        communities = dataStorage.getAllCommunitiesNames();
+        communities = dataStorage.ds().getAllCommunitiesNames();
 
         for (CommunityDetails d : communities) {
             Log.d(TAG, "commId: " + d.id + " =" + d.name);

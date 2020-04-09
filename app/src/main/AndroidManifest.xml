@@ -25,6 +25,7 @@
         </activity>
 
         <service android:name=".service.BackendService" />
-    </application>
 
+        <receiver android:name=".service.AlarmBroardcastReceiver" />
+    </application>
 </manifest>

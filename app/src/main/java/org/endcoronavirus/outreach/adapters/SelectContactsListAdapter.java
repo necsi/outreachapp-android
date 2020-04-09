@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.endcoronavirus.outreach.R;
 import org.endcoronavirus.outreach.models.ContactDetails;
 import org.endcoronavirus.outreach.models.DataStorage;
+import org.endcoronavirus.outreach.models.DataStorageObject;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
     private ViewHolder[] viewHolders;
 
     public SelectContactsListAdapter(DataStorage dataStorage, long communityId, long trueID) {
-        contacts = dataStorage.getAllContacts(communityId);
+        contacts = dataStorage.ds().getAllContacts(communityId, DataStorageObject.Sorting.Name);
         viewHolders = new ViewHolder[contacts.length];
         // Determine starting state of all contacts, some (or all) might need to be selected
         defaultState = new boolean[contacts.length];
@@ -44,7 +45,9 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
         }
     }
 
-    public ContactDetails getContactAtPosition(int position) { return contacts[position]; }
+    public ContactDetails getContactAtPosition(int position) {
+        return contacts[position];
+    }
 
     public void setMenuItems(Menu menu) {
         deleteSelectionMenuItem = menu.findItem(R.id.action_delete_selection);
@@ -129,6 +132,8 @@ public class SelectContactsListAdapter extends RecyclerView.Adapter<SelectContac
             textView.setText(name);
         }
 
-        public void setCheckmarkIf(boolean checked) { checkBox.setChecked(checked); }
+        public void setCheckmarkIf(boolean checked) {
+            checkBox.setChecked(checked);
+        }
     }
 }
