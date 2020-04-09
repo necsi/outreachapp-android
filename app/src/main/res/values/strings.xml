@@ -46,4 +46,6 @@
     <string name="log_try_call">Tried voice call</string>
     <string name="label_last_contact">Last Contacted:</string>
     <string name="last_contact_never">Never</string>
+    <string name="format_notification_message">There are %d contacts that you may want to contact</string>
+    <string name="format_notification_title">Outreach remainder</string>
 </resources>
